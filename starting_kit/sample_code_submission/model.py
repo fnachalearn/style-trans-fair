@@ -11,6 +11,7 @@ import numpy as np   # We recommend to use numpy arrays
 from os.path import isfile
 from sklearn.base import BaseEstimator
 from sklearn.svm import LinearSVC, SVC
+import cv2
 
 class model (BaseEstimator):
     def __init__(self):
@@ -39,8 +40,8 @@ class model (BaseEstimator):
         For regression, labels are continuous values.
         '''
         '''
-                here -X is an np.array() of shape [number of images, height, width]
-                    - y is an np.array() of shape[number of images,]
+                here the imput -X is an np.array() of shape [number of images, height, width]
+                               -y is an np.array() of shape[number of images,]
                 what we did is to resize all the images and flatten them from 3D to 1D and
                 after this we transform the list of flatten image as array. And then we pass it into 
                 the fit function.
@@ -50,10 +51,9 @@ class model (BaseEstimator):
         
         flatt_img=[]
         for image in X:
-            newsize = (512, 512)
-            image = image.resize(newsize)
-            data = asarray(image)
-            flatt_img.append(data.flatten())
+            img= cv2.resize(image, dsize=(54, 140), interpolation=cv2.INTER_CUBIC)
+            flatt_img.append(img.flatten())
+            
         X=np.array(flatt_img)
         self.model.fit(X,y)
         
@@ -82,8 +82,8 @@ class model (BaseEstimator):
         '''
         
         '''
-                here -X is an np.array() of shape [number of images, height, width]
-                    - y is an np.array() of shape[number of images,]
+                here the imputs :  -X is an np.array() of shape [number of images, height, width]
+                                 - y is an np.array() of shape[number of images,]
                 what we did is to resize all the image and flatten them from 3D to 1D and
                 after this we transform the list of flatten image as array. And then we pass it into 
                 the predict function.
@@ -92,11 +92,11 @@ class model (BaseEstimator):
         
         flatt_img=[]
         for image in X:
-            newsize = (512, 512)
-            image = image.resize(newsize)
-            data = asarray(image)
-            flatt_img.append(data.flatten())
+            img= cv2.resize(image, dsize=(54, 140), interpolation=cv2.INTER_CUBIC)
+            flatt_img.append(img.flatten())
+            
         X=np.array(flatt_img)
+       
         
         y_pred=self.model.predict(X)
         
