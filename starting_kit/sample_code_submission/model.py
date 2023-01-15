@@ -10,6 +10,7 @@ import pickle
 import numpy as np   # We recommend to use numpy arrays
 from os.path import isfile
 from sklearn.base import BaseEstimator
+from sklearn.svm import LinearSVC, SVC
 
 class model (BaseEstimator):
     def __init__(self):
@@ -21,6 +22,7 @@ class model (BaseEstimator):
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
+        self.model=SVC(kernel='linear') # here we intialize our model
 
     def fit(self, X, y):
         '''
@@ -36,6 +38,26 @@ class model (BaseEstimator):
         Use data_converter.convert_to_num() to convert to the category number format.
         For regression, labels are continuous values.
         '''
+        '''
+                here -X is an np.array() of shape [number of images, height, width]
+                    - y is an np.array() of shape[number of images,]
+                what we did is to resize all the images and flatten them from 3D to 1D and
+                after this we transform the list of flatten image as array. And then we pass it into 
+                the fit function.
+                
+         ''''
+        
+        
+        flatt_img=[]
+        for image in X:
+            newsize = (512, 512)
+            image = image.resize(newsize)
+            data = asarray(image)
+            flatt_img.append(data.flatten())
+        X=np.array(flatt_img)
+        self.model.fit(X,y)
+        
+        
         self.num_train_samples = X.shape[0]
         if X.ndim>1: self.num_feat = X.shape[1]
         print("FIT: dim(X)= [{:d}, {:d}]".format(self.num_train_samples, self.num_feat))
@@ -58,6 +80,26 @@ class model (BaseEstimator):
         Scikit-learn also has a function predict-proba, we do not require it.
         The function predict eventually can return probabilities.
         '''
+        
+        '''
+                here -X is an np.array() of shape [number of images, height, width]
+                    - y is an np.array() of shape[number of images,]
+                what we did is to resize all the image and flatten them from 3D to 1D and
+                after this we transform the list of flatten image as array. And then we pass it into 
+                the predict function.
+                
+         ''''
+        
+        flatt_img=[]
+        for image in X:
+            newsize = (512, 512)
+            image = image.resize(newsize)
+            data = asarray(image)
+            flatt_img.append(data.flatten())
+        X=np.array(flatt_img)
+        
+        y_pred=self.model.predict(X)
+        
         num_test_samples = X.shape[0]
         if X.ndim>1: num_feat = X.shape[1]
         print("PREDICT: dim(X)= [{:d}, {:d}]".format(num_test_samples, num_feat))
@@ -67,7 +109,7 @@ class model (BaseEstimator):
         y = np.zeros([num_test_samples, self.num_labels])
         # If you uncomment the next line, you get pretty good results for the Iris data :-)
         #y = np.round(X[:,3])
-        return y
+        return y_pred
 
     def save(self, path="./"):
         pickle.dump(self, open(path + '_model.pickle', "wb"))
