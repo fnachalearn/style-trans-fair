@@ -67,9 +67,9 @@ def read_data(data_dir):
     #----------------------------------------------------------------
     # Settings
     #----------------------------------------------------------------
-    IMAGES_PATH = os.path.join(data_dir,"images")
-    JSON_PATH = os.path.join(data_dir,"info.json")
-    CSV_PATH = os.path.join(data_dir,"labels.csv")
+    IMAGES_PATH = os.path.join(data_dir,"data")
+    TRAIN_CSV_PATH = os.path.join(data_dir,"train_labels.csv")
+    TEST_CSV_PATH = os.path.join(data_dir,"test_labels.csv")
 
 
     #----------------------------------------------------------------
@@ -82,15 +82,15 @@ def read_data(data_dir):
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
 
-    #Check JSON file
-    if not os.path.isfile(JSON_PATH):
-        print('[-] JSON file Not Found')
+    #Check CSV file
+    if not os.path.isfile(TRAIN_CSV_PATH):
+        print('[-] Train CSV file Not Found')
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
-
+    
     #Check CSV file
-    if not os.path.isfile(CSV_PATH):
-        print('[-] CSV file Not Found')
+    if not os.path.isfile(TEST_CSV_PATH):
+        print('[-] Test CSV file Not Found')
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
 
@@ -99,42 +99,29 @@ def read_data(data_dir):
     #----------------------------------------------------------------
     # Load CSV
     #----------------------------------------------------------------
-    data_df = pd.read_csv(CSV_PATH)
-
-
-    #----------------------------------------------------------------
-    # Read JSON
-    #----------------------------------------------------------------
-    f = open (JSON_PATH, "r")
-    info = json.loads(f.read())
-
-
-
-
+    train_df = pd.read_csv(TRAIN_CSV_PATH)
+    test_df = pd.read_csv(TEST_CSV_PATH)
 
     #----------------------------------------------------------------
     # Check Columns in CSV
     #----------------------------------------------------------------
-    csv_columns = data_df.columns
+    csv_columns = train_df.columns
 
-    #Image 
-    if not info["image_column_name"] in csv_columns:
-        print('[-] Column Not Found : ' + info["image_column_name"])
+    #FILE_NAME 
+    if not 'FILE_NAME' in csv_columns:
+        print('[FILE_NAME Column Not Found')
         return
 
 
-    #Category 
-    if not info["category_column_name"] in csv_columns:
-        print('[-] Column Not Found : ' + info["category_column_name"])
+    #CATEGORY 
+    if not 'CATEGORY' in csv_columns:
+        print('[CATEGORY Column Not Found')
         return
 
-
-
-    #Super Category 
-    if info["has_super_categories"]:
-        if not info["super_category_column_name"] in csv_columns:
-            print('[-] Column Not Found : ' + info["super_category_column_name"])
-            return
+    #STYLE 
+    if not 'STYLE' in csv_columns:
+        print('[STYLE Column Not Found')
+        return
 
 
     print("-------------------------------------")
@@ -142,74 +129,41 @@ def read_data(data_dir):
     print("-------------------------------------\n\n")
    
 
-
-
-    #----------------------------------------------------------------
-    # Settings from info JSON file
-    #----------------------------------------------------------------
-
-    # category column name in csv
-    CATEGORY_COLUMN = info["category_column_name"]
-
-    # image column name in csv
-    IMAGE_COLUMN = info["image_column_name"]
-
-
-
-
     print("###-------------------------------------###")
     print("### Loading Data")
     print("###-------------------------------------###\n\n")
-    
-
-    
-        
-
-
-
-
 
 
     #----------------------------------------------------------------
     # Categories
     #----------------------------------------------------------------
 
-    categories = data_df[CATEGORY_COLUMN].unique()
+    categories = train_df['CATEGORY'].unique()
     total_categories = len(categories)
 
-   
+    #----------------------------------------------------------------
+    # Styles
+    #----------------------------------------------------------------
 
+    styles = train_df['STYLE'].unique()
+    total_styles = len(styles)
 
     #----------------------------------------------------------------
     # Load Images
     #----------------------------------------------------------------
     data_dict = {}
-    
-    
-    data_df['label_cat'] = data_df[CATEGORY_COLUMN].astype('category')
-    
-    
-    data_dict['categories'] = data_df['label_cat'].cat.categories.values
-    data_dict['images'] = data_df[CATEGORY_COLUMN].value_counts().values
-    
-    
-    train_data, test_data = train_test_split(
-        data_df, test_size=0.5, 
-        random_state=420, shuffle=True, 
-        stratify=data_df[CATEGORY_COLUMN]
-    )
-    
 
+    data_dict['train_df'] = train_df
+    data_dict['test_df'] = test_df
     
-    data_dict['train_labels'] = train_data[CATEGORY_COLUMN].values
-    data_dict['test_labels'] = test_data[CATEGORY_COLUMN].values
+    data_dict['train_labels'] = train_df['CATEGORY'].values
+    data_dict['test_labels'] = test_df['CATEGORY'].values
+
+    data_dict['train_styles'] = train_df['STYLE'].values
+    data_dict['test_styles'] = test_df['STYLE'].values
     
-    data_dict['train_labels_num'] =  np.asarray(train_data['label_cat'].cat.codes.values)
-    data_dict['test_labels_num'] = np.asarray(test_data['label_cat'].cat.codes.values)
-    
-    
-    data_dict['train_data'] = train_data[IMAGE_COLUMN].values
-    data_dict['test_data'] = test_data[IMAGE_COLUMN].values
+    data_dict['train_data'] = train_df['FILE_NAME'].values
+    data_dict['test_data'] = test_df['FILE_NAME'].values
 
     print("-------------------------------------")
     print("[+] Data loaded successfully")
@@ -245,7 +199,7 @@ def read_data(data_dir):
     
 
     
-    return data_dict, info
+    return data_dict
 
 def read_as_df(basename, type="train"):
     ''' Function to read the AutoML format and return a Panda Data Frame '''
@@ -338,7 +292,7 @@ def write(filename, predictions):
                         if type(row) is not np.ndarray and type(row) is not list:
                                 row = [row]
                         for val in row:
-                                output_file.write('{0:g} '.format(float(val)))
+                                output_file.write('{} '.format(val))
                         output_file.write('\n')
 
 def zipdir(archivename, basedir):

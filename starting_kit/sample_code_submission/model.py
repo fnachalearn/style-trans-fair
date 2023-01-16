@@ -46,7 +46,7 @@ class model (BaseEstimator):
                 after this we transform the list of flatten image as array. And then we pass it into 
                 the fit function.
                 
-         ''''
+         '''
         
         
         flatt_img=[]
@@ -88,7 +88,7 @@ class model (BaseEstimator):
                 after this we transform the list of flatten image as array. And then we pass it into 
                 the predict function.
                 
-         ''''
+         '''
         
         flatt_img=[]
         for image in X:

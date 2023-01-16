@@ -31,3 +31,7 @@
 ### JupyterNotebooks ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+### sample_result_submission ###
+starting_kit/sample_result_submission/*
+sample_code_submission_*
