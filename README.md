@@ -1,4 +1,4 @@
-# Repository for Codalab bundle for AI Challenge Creation Class
+# AI Challenge Creation - STYLE-TRANS-FAIR
 
 This repository is for **challenge organizers** to organize a challenge on [Codalab](https://codalab.lisn.upsaclay.fr/).
 
