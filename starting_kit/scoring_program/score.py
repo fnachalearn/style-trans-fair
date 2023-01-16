@@ -81,7 +81,7 @@ if __name__ == "__main__":
     
     #Solution Arrays
     # 3 arrays: train, validation and test
-    solution_names, solutions = read_solutions(solution_dir)
+    solution_names, solutions, styles = read_solutions(solution_dir)
  
     for i, solution_name in enumerate(solution_names):
         
@@ -98,13 +98,14 @@ if __name__ == "__main__":
             # Read the solution and prediction values into numpy arrays
             prediction = read_array(predict_file)
             solution = solutions[i]
+            style = styles[i]
             if (len(solution) != len(prediction)): 
                 print("#--ERROR--# Prediction length={} and Solution length={}".format(len(prediction), len(solution)))
                 raise ValueError("Prediction length={} and Solution length={}".format(len(prediction), len(solution)))
 
             try:
                 # Compute the score prescribed by the metric file 
-                score = scoring_function(solution, prediction)
+                score = scoring_function(solution, prediction, style)
                 print(
                     "======= Set %d" % set_num + " (" + data_name.capitalize() + "_" + solution_name + "): " + metric_name + "(" + score_name + ")=%0.12f =======" % score)
                 html_file.write(

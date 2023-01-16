@@ -23,7 +23,7 @@ class model (BaseEstimator):
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        self.model=SVC(kernel='linear') # here we intialize our model
+        self.simple_model=SVC(kernel='linear') # here we intialize our model
 
     def fit(self, X, y):
         '''
@@ -55,7 +55,7 @@ class model (BaseEstimator):
             flatt_img.append(img.flatten())
             
         X=np.array(flatt_img)
-        self.model.fit(X,y)
+        self.simple_model.fit(X,y)
         
         
         self.num_train_samples = X.shape[0]
@@ -97,8 +97,7 @@ class model (BaseEstimator):
             
         X=np.array(flatt_img)
        
-        
-        y_pred=self.model.predict(X)
+        y_pred=self.simple_model.predict(X)
         
         num_test_samples = X.shape[0]
         if X.ndim>1: num_feat = X.shape[1]

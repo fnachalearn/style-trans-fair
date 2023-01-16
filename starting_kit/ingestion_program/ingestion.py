@@ -177,9 +177,9 @@ if __name__=="__main__" and debug_mode<4:
     data = read_data(input_dir)
 
     X_TRAIN = data["train_images"]
-    Y_TRAIN = data["train_labels_num"]
+    Y_TRAIN = data["train_labels"]
     X_TEST = data["test_images"]
-    Y_TEST = data["test_labels_num"]
+    Y_TEST = data["test_labels"]
     
 
 

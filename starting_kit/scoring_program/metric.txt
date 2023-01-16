@@ -1,1 +1,1 @@
-accuracy_score
+worst_group_accuracy_metric
