@@ -1,3 +1,0 @@
-set1_score: 0.166666666667
-set2_score: 0.333333333333
-Duration: 0
