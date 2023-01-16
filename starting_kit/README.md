@@ -1,17 +1,23 @@
 # Starting kit for Insects Classification Challenge
 
-This challenge uses a Dataset from **MUSÉUM NATIONAL D’HISTOIRE NATURELLE**
+This challenge uses a Dataset from **[Meta Album](https://meta-album.github.io/)**
     
-The dataset coniststs of total 290,000 images and each image belongs to one of the following classes
+***
+# Introduction
 
-1. Bee
-2. Wasp
-3. Other insect
-4. Butterfly insect
+This challenge uses a Dataset from ***Meta Album***. There are 5 tasks in the Development phase and 5 tasks in the Final Phase.
+Each task in the dataset consists of **360** images splited into 9 groups:
 
+
+<center>
+<img src="../images/task_distribution.png" width="1200" height="450">
+</center>
+
+where the training set is biased in Style, and the test set is balanced.
+
+The sample dataset in this starting kit conists of **360** images of the Insect classification task.
     
-This challenge is about creating and predicting a Machine Learning model and train it with the data provided to classify the images into the mentioned 5 categories. 
-
+This challenge is about creating a Machine Learning model and train it with the data provided to classify the images into the mentioned 3 Classes without being biased towards Styles.
 
 ### Phases
 This challenge conists of two phases:  
@@ -23,17 +29,14 @@ In this phase you can train a model and submit at most 20 submissions per day to
 In this phase you can submit only once so it is advised to do it when you are ready for the final submission.
     
     
-
-### References and credits: 
-
-1. MUSÉUM NATIONAL D’HISTOIRE NATURELLE (https://www.mnhn.fr/)
-2. SPIPOLL (https://www.spipoll.org/)      
-3. Université Paris Saclay (https://www.universite-paris-saclay.fr/)
-4. ChaLearn (http://www.chalearn.org/)
-
+**References and credits:**  
+ - Meta Album (https://meta-album.github.io/)  
+ - Université Paris Saclay (https://www.universite-paris-saclay.fr/)  
+ - ChaLearn (http://www.chalearn.org/)  
+***
 
 ### Prerequisites:
-Install Anaconda Python 3.6.6 
+Install Anaconda Python 3.8 
 
 
 ### Usage:
