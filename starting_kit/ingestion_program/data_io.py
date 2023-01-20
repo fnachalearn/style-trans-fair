@@ -67,9 +67,9 @@ def read_data(data_dir):
     #----------------------------------------------------------------
     # Settings
     #----------------------------------------------------------------
-    IMAGES_PATH = os.path.join(data_dir,"data")
-    TRAIN_CSV_PATH = os.path.join(data_dir,"train_labels.csv")
-    TEST_CSV_PATH = os.path.join(data_dir,"test_labels.csv")
+    IMAGES_PATH = os.path.join(data_dir,"stylized")
+    JSON_PATH = os.path.join(data_dir,"info.json")
+    CSV_PATH = os.path.join(data_dir,"labels.csv")
 
 
     #----------------------------------------------------------------
@@ -82,15 +82,15 @@ def read_data(data_dir):
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
 
-    #Check CSV file
-    if not os.path.isfile(TRAIN_CSV_PATH):
-        print('[-] Train CSV file Not Found')
+    #Check JSON file
+    if not os.path.isfile(JSON_PATH):
+        print('[-] JSON file Not Found')
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
-    
+
     #Check CSV file
-    if not os.path.isfile(TEST_CSV_PATH):
-        print('[-] Test CSV file Not Found')
+    if not os.path.isfile(CSV_PATH):
+        print('[-] CSV file Not Found')
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return
 
@@ -99,29 +99,42 @@ def read_data(data_dir):
     #----------------------------------------------------------------
     # Load CSV
     #----------------------------------------------------------------
-    train_df = pd.read_csv(TRAIN_CSV_PATH)
-    test_df = pd.read_csv(TEST_CSV_PATH)
+    data_df = pd.read_csv(CSV_PATH)
+
+
+    #----------------------------------------------------------------
+    # Read JSON
+    #----------------------------------------------------------------
+    f = open (JSON_PATH, "r")
+    info = json.loads(f.read())
+
+
+
+
 
     #----------------------------------------------------------------
     # Check Columns in CSV
     #----------------------------------------------------------------
-    csv_columns = train_df.columns
+    csv_columns = data_df.columns
 
-    #FILE_NAME 
-    if not 'FILE_NAME' in csv_columns:
-        print('[FILE_NAME Column Not Found')
+    #Image 
+    if not info["image_column_name"] in csv_columns:
+        print('[-] Column Not Found : ' + info["image_column_name"])
         return
 
 
-    #CATEGORY 
-    if not 'CATEGORY' in csv_columns:
-        print('[CATEGORY Column Not Found')
+    #Category 
+    if not info["category_column_name"] in csv_columns:
+        print('[-] Column Not Found : ' + info["category_column_name"])
         return
 
-    #STYLE 
-    if not 'STYLE' in csv_columns:
-        print('[STYLE Column Not Found')
-        return
+
+
+    #Super Category 
+    if info["has_super_categories"]:
+        if not info["super_category_column_name"] in csv_columns:
+            print('[-] Column Not Found : ' + info["super_category_column_name"])
+            return
 
 
     print("-------------------------------------")
@@ -129,41 +142,88 @@ def read_data(data_dir):
     print("-------------------------------------\n\n")
    
 
+
+
+    #----------------------------------------------------------------
+    # Settings from info JSON file
+    #----------------------------------------------------------------
+
+    # category column name in csv
+    CATEGORY_COLUMN = info["category_column_name"]
+
+    # image column name in csv
+    IMAGE_COLUMN = info["image_column_name"]
+
+
+
+
     print("###-------------------------------------###")
     print("### Loading Data")
     print("###-------------------------------------###\n\n")
+    
+
+    
+        
+
+
+
+
 
 
     #----------------------------------------------------------------
     # Categories
     #----------------------------------------------------------------
 
-    categories = train_df['CATEGORY'].unique()
+    categories = data_df[CATEGORY_COLUMN].unique()
     total_categories = len(categories)
 
-    #----------------------------------------------------------------
-    # Styles
-    #----------------------------------------------------------------
+   
 
-    styles = train_df['STYLE'].unique()
-    total_styles = len(styles)
 
     #----------------------------------------------------------------
     # Load Images
     #----------------------------------------------------------------
     data_dict = {}
-
-    data_dict['train_df'] = train_df
-    data_dict['test_df'] = test_df
     
-    data_dict['train_labels'] = train_df['CATEGORY'].values
-    data_dict['test_labels'] = test_df['CATEGORY'].values
-
-    data_dict['train_styles'] = train_df['STYLE'].values
-    data_dict['test_styles'] = test_df['STYLE'].values
     
-    data_dict['train_data'] = train_df['FILE_NAME'].values
-    data_dict['test_data'] = test_df['FILE_NAME'].values
+    data_df['label_cat'] = data_df[CATEGORY_COLUMN].astype('category')
+    
+    
+    data_dict['categories'] = data_df['label_cat'].cat.categories.values
+    data_dict['images'] = data_df[CATEGORY_COLUMN].value_counts().values
+
+
+    #####
+from sklearn.model_selection import train_test_split
+train_df, test_df = [], []
+for category in df.CATEGORY.unique():
+    for style in df.STYLE.unique():
+        train, test = train_test_split(df[(df.CATEGORY==category)&(df.STYLE==style)], test_size=0.5)
+        train_df.append(train)
+        test_df.append(test)
+train_df = pd.concat(train_df)
+test_df = pd.concat(test_df)
+
+    #####
+    
+    
+    train_data, test_data = train_test_split(
+        data_df, test_size=0.5, 
+        random_state=420, shuffle=True, 
+        stratify=data_df[CATEGORY_COLUMN]
+    )
+    
+
+    
+    data_dict['train_labels'] = train_data[CATEGORY_COLUMN].values
+    data_dict['test_labels'] = test_data[CATEGORY_COLUMN].values
+    
+    data_dict['train_labels_num'] =  np.asarray(train_data['label_cat'].cat.codes.values)
+    data_dict['test_labels_num'] = np.asarray(test_data['label_cat'].cat.codes.values)
+    
+    
+    data_dict['train_data'] = train_data[IMAGE_COLUMN].values
+    data_dict['test_data'] = test_data[IMAGE_COLUMN].values
 
     print("-------------------------------------")
     print("[+] Data loaded successfully")
@@ -199,7 +259,7 @@ def read_data(data_dir):
     
 
     
-    return data_dict
+    return data_dict, info
 
 def read_as_df(basename, type="train"):
     ''' Function to read the AutoML format and return a Panda Data Frame '''
@@ -252,6 +312,48 @@ if (os.name == "nt"):
 else:
        filesep = '/'
        
+
+
+def bias_spliter(df, percentage = 60, shuffle_styles = True): 
+    """
+    The method is taking a dataframe and it is generating a biased set. 
+
+    @df - the dataframe that needs to be biased 
+    @percentage - the percentage of samples from the dominant style of each category 
+    @shuffle_styles - if True, then the style will be randomly selected for each category
+
+    return: a biased dataframe which has a dominant style for each category
+
+    """
+    categories = df['CATEGORY'].unique()
+    styles = df['STYLE'].unique()
+    
+    if shuffle_styles : 
+        np.random.shuffle(styles)
+        
+    categories = categories.tolist() 
+    styles = styles.tolist() 
+    
+    chunks = []
+    
+    for index_style, style in enumerate(styles):
+        for index_category, category in enumerate(categories): 
+            
+            style_category_df = df[(df['STYLE'] == style) & (df['CATEGORY'] == category)]
+            
+            if index_style == index_category: 
+                pivot = percentage*len(style_category_df)//100
+                chunks.append(style_category_df[:pivot])
+            else: 
+                pivot = (100-percentage)//2*len(style_category_df)//100
+                chunks.append(style_category_df[:pivot])
+                                                
+    
+    biased_df = pd.concat(chunks, axis=0)                                            
+        
+    return biased_df
+  
+
 def write_list(lst):
     ''' Write a list of items to stderr (for debug purposes)'''
     for item in lst:
@@ -292,7 +394,7 @@ def write(filename, predictions):
                         if type(row) is not np.ndarray and type(row) is not list:
                                 row = [row]
                         for val in row:
-                                output_file.write('{} '.format(val))
+                                output_file.write('{0:g} '.format(float(val)))
                         output_file.write('\n')
 
 def zipdir(archivename, basedir):
@@ -524,4 +626,3 @@ def platform_score ( basename , mem_used ,n_estimators , time_spent , time_budge
         [basename,n_estimators,platform.system(), platform.machine(),platform.platform() , float("{0:.2f}".format(mem_used/1048576.0)) ,  float("{0:.2f}".format(time_spent)) ,    time_budget ]
         ]
         a.writerows(data)
-
