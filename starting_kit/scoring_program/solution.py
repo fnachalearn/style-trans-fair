@@ -15,25 +15,33 @@ def read_solutions(data_dir):
     #----------------------------------------------------------------
     # Settings
     #----------------------------------------------------------------
-    TRAIN_CSV_PATH = os.path.join(data_dir,"train_labels.csv")
-    TEST_CSV_PATH = os.path.join(data_dir,"test_labels.csv")
+    JSON_PATH = os.path.join(data_dir,"info.json")
+    CSV_PATH = os.path.join(data_dir,"labels.csv")
+    
+    #Check JSON file
+    if not os.path.isfile(JSON_PATH):
+        print('[-] JSON file Not Found')
+        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        return
 
     #Check CSV file
-    if not os.path.isfile(TRAIN_CSV_PATH):
-        print('[-] CSV file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
-        return 
-
-    if not os.path.isfile(TEST_CSV_PATH):
+    if not os.path.isfile(CSV_PATH):
         print('[-] CSV file Not Found')
         print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
         return 
     
+
+    #----------------------------------------------------------------
+    # Read JSON
+    #----------------------------------------------------------------
+    f = open (JSON_PATH, "r")
+    info = json.loads(f.read())
+
+
     #----------------------------------------------------------------
     # Load CSV
     #----------------------------------------------------------------
-    train_df = pd.read_csv(TRAIN_CSV_PATH)
-    test_df = pd.read_csv(TEST_CSV_PATH)
+    data_df = pd.read_csv(CSV_PATH)
         
     
     
@@ -41,69 +49,91 @@ def read_solutions(data_dir):
     #----------------------------------------------------------------
     # Check Columns in CSV
     #----------------------------------------------------------------
-    csv_columns = train_df.columns
+    csv_columns = data_df.columns
 
-    #FILE_NAME 
-    if not 'FILE_NAME' in csv_columns:
-        print('[FILE_NAME Column Not Found')
+
+
+
+
+    #Category 
+    if not info["category_column_name"] in csv_columns:
+        print('[-] Column Not Found : ' + info["category_column_name"])
         return
 
 
-    #CATEGORY 
-    if not 'CATEGORY' in csv_columns:
-        print('[CATEGORY Column Not Found')
-        return
+    #----------------------------------------------------------------
+    # Settings from info JSON file
+    #----------------------------------------------------------------
 
-    #STYLE 
-    if not 'STYLE' in csv_columns:
-        print('[STYLE Column Not Found')
-        return
+    # category column name in csv
+    CATEGORY_COLUMN = info["category_column_name"]
+
+    
+        
+
+    data_df['label_cat'] = data_df[CATEGORY_COLUMN].astype('category')
 
 
-    print("-------------------------------------")
-    print("[+] Your dataset is in perfect format")
-    print("-------------------------------------\n\n")
-   
-
+    
+    train_data, test_data = train_test_split(
+        data_df, test_size=0.5, 
+        random_state=420, shuffle=True, 
+        stratify=data_df[CATEGORY_COLUMN]
+    )
     print("###-------------------------------------###")
-    print("### Loading Data")
-    print("###-------------------------------------###\n\n")
-
-
-    #----------------------------------------------------------------
-    # Categories
-    #----------------------------------------------------------------
-
-    categories = train_df['CATEGORY'].unique()
-    total_categories = len(categories)
-
-    #----------------------------------------------------------------
-    # Styles
-    #----------------------------------------------------------------
-
-    styles = train_df['STYLE'].unique()
-    total_styles = len(styles)
-
-    print("###-------------------------------------###")
-    print("### Train solutions : ", train_df.shape[0])
-    print("### Test solutions : ", test_df.shape[0])
+    print("### Total solutions : ",  data_df.shape[0])
+    print("### Train solutions : ", train_data.shape[0])
+    print("### Test solutions : ", test_data.shape[0])
     print("###-------------------------------------###\n\n")
     
     
-    train_solution =  train_df['CATEGORY'].values
-    test_solution = test_df['CATEGORY'].values
-
-    train_styles =  train_df['STYLE'].values
-    test_styles =  test_df['STYLE'].values
+    train_solution =  np.asarray(train_data['label_cat'].cat.codes.values)
+    test_solution = np.asarray(test_data['label_cat'].cat.codes.values)
     
     solutions = [train_solution, test_solution]
-    styles = [train_styles, test_styles]
     solution_names = ['train', 'test']
     
     print("###-------------------------------------###")
     print("### Solutions files are ready!")
     print("###-------------------------------------###\n\n")
     
-    return (solution_names,solutions,styles)
+    return (solution_names,solutions)
+
+
+    # #----------------------------------------------------------------
+    # # Categories
+    # #----------------------------------------------------------------
+
+    # categories = train_df['CATEGORY'].unique()
+    # total_categories = len(categories)
+
+    # #----------------------------------------------------------------
+    # # Styles
+    # #----------------------------------------------------------------
+
+    # styles = train_df['STYLE'].unique()
+    # total_styles = len(styles)
+
+    # print("###-------------------------------------###")
+    # print("### Train solutions : ", train_df.shape[0])
+    # print("### Test solutions : ", test_df.shape[0])
+    # print("###-------------------------------------###\n\n")
+    
+    
+    # train_solution =  train_df['CATEGORY'].values
+    # test_solution = test_df['CATEGORY'].values
+
+    # train_styles =  train_df['STYLE'].values
+    # test_styles =  test_df['STYLE'].values
+    
+    # solutions = [train_solution, test_solution]
+    # styles = [train_styles, test_styles]
+    # solution_names = ['train', 'test']
+    
+    # print("###-------------------------------------###")
+    # print("### Solutions files are ready!")
+    # print("###-------------------------------------###\n\n")
+    
+    # return (solution_names,solutions,styles)
 
 

@@ -79,19 +79,19 @@ def read_data(data_dir):
     # Check Images Directory
     if not os.path.exists(IMAGES_PATH):
         print('[-] Images directory Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
         return
 
     #Check JSON file
     if not os.path.isfile(JSON_PATH):
         print('[-] JSON file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
         return
 
     #Check CSV file
     if not os.path.isfile(CSV_PATH):
         print('[-] CSV file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
         return
 
 
@@ -151,6 +151,9 @@ def read_data(data_dir):
     # category column name in csv
     CATEGORY_COLUMN = info["category_column_name"]
 
+    # style column name in csv
+    STYLE_COLUMN = info["style_column_name"]
+
     # image column name in csv
     IMAGE_COLUMN = info["image_column_name"]
 
@@ -175,48 +178,40 @@ def read_data(data_dir):
     #----------------------------------------------------------------
 
     categories = data_df[CATEGORY_COLUMN].unique()
+    styles = data_df[STYLE_COLUMN].unique()
     total_categories = len(categories)
-
-   
-
+    total_styles = len(styles)
 
     #----------------------------------------------------------------
     # Load Images
     #----------------------------------------------------------------
     data_dict = {}
     
-    
     data_df['label_cat'] = data_df[CATEGORY_COLUMN].astype('category')
-    
-    
     data_dict['categories'] = data_df['label_cat'].cat.categories.values
+
+    data_dict['styles'] = data_df[STYLE_COLUMN].values
+
     data_dict['images'] = data_df[CATEGORY_COLUMN].value_counts().values
 
 
-    #####
-from sklearn.model_selection import train_test_split
-train_df, test_df = [], []
-for category in df.CATEGORY.unique():
-    for style in df.STYLE.unique():
-        train, test = train_test_split(df[(df.CATEGORY==category)&(df.STYLE==style)], test_size=0.5)
-        train_df.append(train)
-        test_df.append(test)
-train_df = pd.concat(train_df)
-test_df = pd.concat(test_df)
+    train_data, test_data = [], []
+    for category in data_df.CATEGORY.unique():
+        for style in data_df.STYLE.unique():
+            train, test = train_test_split(data_df[(data_df.CATEGORY==category)&(data_df.STYLE==style)], test_size=0.5)
+            train_data.append(train)
+            test_data.append(test)
+    train_data = pd.concat(train_data)
+    test_data = pd.concat(test_data)
 
-    #####
-    
-    
-    train_data, test_data = train_test_split(
-        data_df, test_size=0.5, 
-        random_state=420, shuffle=True, 
-        stratify=data_df[CATEGORY_COLUMN]
-    )
-    
+    train_data = bias_spliter(train_data,percentage=60)
 
     
     data_dict['train_labels'] = train_data[CATEGORY_COLUMN].values
     data_dict['test_labels'] = test_data[CATEGORY_COLUMN].values
+
+    data_dict['train_styles'] = train_data[STYLE_COLUMN].values
+    data_dict['test_styles'] = test_data[STYLE_COLUMN].values
     
     data_dict['train_labels_num'] =  np.asarray(train_data['label_cat'].cat.codes.values)
     data_dict['test_labels_num'] = np.asarray(test_data['label_cat'].cat.codes.values)
@@ -224,6 +219,9 @@ test_df = pd.concat(test_df)
     
     data_dict['train_data'] = train_data[IMAGE_COLUMN].values
     data_dict['test_data'] = test_data[IMAGE_COLUMN].values
+
+    data_dict['train_df'] = train_data
+    data_dict['test_df'] = test_data
 
     print("-------------------------------------")
     print("[+] Data loaded successfully")
@@ -250,14 +248,9 @@ test_df = pd.concat(test_df)
     data_dict['train_images'] = np.asarray(train_images)
     data_dict['test_images'] = np.asarray(test_images)
 
-  
     print("-------------------------------------")
     print("[+] Images loaded successfully")
     print("-------------------------------------\n\n")
-    
-
-    
-
     
     return data_dict, info
 

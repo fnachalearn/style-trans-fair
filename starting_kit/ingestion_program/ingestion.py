@@ -174,12 +174,12 @@ if __name__=="__main__" and debug_mode<4:
     #-------------------------------------------------------------
     # Read DATA 
     #-------------------------------------------------------------
-    data = read_data(input_dir)
+    data, meta_data = read_data(input_dir)
 
     X_TRAIN = data["train_images"]
-    Y_TRAIN = data["train_labels"]
+    Y_TRAIN = data["train_labels_num"]
     X_TEST = data["test_images"]
-    Y_TEST = data["test_labels"]
+    Y_TEST = data["test_labels_num"]
     
 
 

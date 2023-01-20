@@ -81,6 +81,7 @@ if __name__ == "__main__":
     
     #Solution Arrays
     # 3 arrays: train, validation and test
+    print(solution_dir)
     solution_names, solutions, styles = read_solutions(solution_dir)
  
     for i, solution_name in enumerate(solution_names):
