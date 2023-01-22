@@ -64,7 +64,7 @@
 
 # ### Imports
 
-# In[1]:
+# In[25]:
 
 
 # import the necessary libraries
@@ -75,9 +75,10 @@ import seaborn as sns
 from IPython.display import display, Image
 from PIL import Image
 from sklearn.decomposition import PCA
+import os
 
 
-# In[2]:
+# In[3]:
 
 
 model_dir = 'sample_code_submission/' # Change the model to a better one once you have one!
@@ -94,7 +95,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-# In[3]:
+# In[4]:
 
 
 get_ipython().run_line_magic('reload_ext', 'autoreload')
@@ -106,7 +107,7 @@ get_ipython().run_line_magic('reload_ext', 'autoreload')
 # 
 # The data used for this challenge has images resized into 512x512 pixels.
 
-# In[4]:
+# In[5]:
 
 
 data_name = 'insect_challenge' # DO NOT CHANGE
@@ -123,28 +124,16 @@ image_dir = data_dir + '/stylized/'
 get_ipython().system('pip install scikit-image')
 
 
-# In[5]:
+# In[7]:
 
 
 from data_io import read_data
-data = read_data(data_dir, random_state=42)
+data,meta_data = read_data(data_dir, random_state=42)
 
 
 # ### Data Statistics
 
-# In[9]:
-
-
-data
-
-
-# In[6]:
-
-
-np.unique(data['train_labels'])
-
-
-# In[9]:
+# In[8]:
 
 
 print("Categories/Classes : ", np.unique(data['train_labels']))
@@ -153,18 +142,48 @@ print("Train Images:", len(data['train_images']))
 print("Test Images:", len(data['test_images']))
 
 
+# ## Original Image -> Style -> Stylized
+
+# In[24]:
+
+
+df = pd.read_csv(data_dir + '/labels.csv')
+df.head()
+
+
+# In[45]:
+
+
+def print_style_transfer_samples(df, index):
+    f, ax = plt.subplots(1, 3)
+    f.set_figheight(5)
+    f.set_figwidth(15)
+    ax[0].imshow(Image.open(os.path.join(data_dir, 'content', df['ORIG_CATEGORY_FILE'][index])))
+    ax[0].set_title('Original')
+    ax[1].imshow(Image.open(os.path.join(data_dir, 'styles', df['ORIG_STYLE_FILE'][index])))
+    ax[1].set_title('Style')
+    ax[2].imshow(Image.open(os.path.join(data_dir, 'stylized', df['FILE_NAME'][index])))
+    ax[2].set_title('Stylized')
+
+
+# In[46]:
+
+
+print_style_transfer_samples(df,9)
+
+
 # ### Distribution of Classes/Labels
 
 # #### Train
 
-# In[10]:
+# In[9]:
 
 
 grouped = data['train_df'].groupby(["CATEGORY", "STYLE"]).size().reset_index(name="COUNT")
 grouped
 
 
-# In[11]:
+# In[10]:
 
 
 # Create the heatmap visualization for category and style
@@ -177,14 +196,14 @@ plt.show()
 
 # #### Test
 
-# In[12]:
+# In[11]:
 
 
 grouped = data['test_df'].groupby(["CATEGORY", "STYLE"]).size().reset_index(name="COUNT")
 grouped
 
 
-# In[13]:
+# In[12]:
 
 
 # Create the heatmap visualization for category and style
@@ -197,7 +216,7 @@ plt.show()
 
 # ### Visualization
 
-# In[14]:
+# In[13]:
 
 
 def show_figure(label, df):
@@ -225,7 +244,7 @@ def show_figure(label, df):
     return 
 
 
-# In[15]:
+# In[14]:
 
 
 show_figure('Apoidea', data['train_df'])
@@ -233,7 +252,7 @@ show_figure('Apoidea', data['train_df'])
 
 # For further exploratory data analysis, we analyze the RGB color model and plot the graph. We get the mean for each channel of each image, and save it in the columns of a dataframe.
 
-# In[16]:
+# In[15]:
 
 
 rgb = pd.DataFrame(
@@ -249,7 +268,7 @@ rgb.head()
 
 # We also normalize each color vector, so that we only care about the direction of the color vector and not about its magnitude.
 
-# In[17]:
+# In[ ]:
 
 
 pca = PCA(2)
@@ -262,7 +281,7 @@ rgb[list("xy")] = transformed_rgb
 red, green, blue = pca.transform(np.identity(3))
 
 
-# In[18]:
+# In[ ]:
 
 
 plot_data = rgb
@@ -283,7 +302,7 @@ plt.show()
 # - Green: 71.52% 
 # - Blue: 7.22%
 
-# In[19]:
+# In[ ]:
 
 
 BRIGHTNESS_VECTOR = np.array([0.2126, 0.7152, 0.0722])
@@ -295,7 +314,7 @@ rgb.head()
 
 # Using the boxplot we could easily identify the minimum, maximum, interquartile range, median and the outliers. Here we ordered it in respect to their lower quartile (Q1) to make it more representative.
 
-# In[20]:
+# In[ ]:
 
 
 plot_data = rgb[["category", "brightness"]].copy()
@@ -306,7 +325,7 @@ plt.title("Luminance (perceived brightness)")
 plt.show()
 
 
-# In[21]:
+# In[ ]:
 
 
 ax = pd.DataFrame(rgb.groupby("category")["brightness"].mean()).plot.barh()
@@ -330,14 +349,14 @@ plt.show()
 # 
 # Uncomment the next line
 
-# In[22]:
+# In[ ]:
 
 
 # !pip install --user --upgrade tensorflow
 # !pip install keras
 
 
-# In[23]:
+# In[ ]:
 
 
 from data_io import write
