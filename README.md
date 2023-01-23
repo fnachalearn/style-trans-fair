@@ -10,7 +10,7 @@ This challenge uses a Dataset from ***Meta Album***. There are 5 tasks in the De
 Each task in the dataset consists of **360** images splited into 9 groups:
 
 <center>
-<img src="images/task_distribution.png" width="1200" height="450">
+<img src="images/task_distribution.png" width="1200">
 </center>
 
 where the training set is biased in Style, and the test set is balanced.
