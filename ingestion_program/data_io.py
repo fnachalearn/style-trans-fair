@@ -41,12 +41,13 @@ import pkg_resources
 import yaml
 from shutil import copy2
 import csv
+import random
 #import psutil
 import platform
 
 # ================ Small auxiliary functions =================
 
-def read_data(data_dir):
+def read_data(data_dir, random_state=42):
 
     """ 
     Function to read the Images in raw format
@@ -166,12 +167,6 @@ def read_data(data_dir):
     
 
     
-        
-
-
-
-
-
 
     #----------------------------------------------------------------
     # Categories
@@ -196,15 +191,15 @@ def read_data(data_dir):
 
 
     train_data, test_data = [], []
-    for category in data_df.CATEGORY.unique():
-        for style in data_df.STYLE.unique():
-            train, test = train_test_split(data_df[(data_df.CATEGORY==category)&(data_df.STYLE==style)], test_size=0.5)
+    for category in data_df[CATEGORY_COLUMN].unique():
+        for style in data_df[STYLE_COLUMN].unique():
+            train, test = train_test_split(data_df[(data_df[CATEGORY_COLUMN]==category)&(data_df[STYLE_COLUMN]==style)], test_size=0.5, random_state=random_state)
             train_data.append(train)
             test_data.append(test)
     train_data = pd.concat(train_data)
     test_data = pd.concat(test_data)
 
-    train_data = bias_spliter(train_data,percentage=60)
+    train_data = bias_spliter(train_data,percentage=60,random_state=random_state)
 
     
     data_dict['train_labels'] = train_data[CATEGORY_COLUMN].values
@@ -258,9 +253,9 @@ def read_as_df(basename, type="train"):
     ''' Function to read the AutoML format and return a Panda Data Frame '''
     csvfile = basename + '_' + type + '.csv'
     if isfile(csvfile):
-    	print('Reading '+ basename + '_' + type + ' from CSV')
-    	XY = pd.read_csv(csvfile)
-    	return XY
+        print('Reading '+ basename + '_' + type + ' from CSV')
+        XY = pd.read_csv(csvfile)
+        return XY
     	
     print('Reading '+ basename + '_' + type+ ' from AutoML format')
     feat_name = pd.read_csv(basename + '_feat.name', header=None)
@@ -279,12 +274,12 @@ def read_as_df(basename, type="train"):
         [patnum2, classnum] = Y.shape
         assert(patnum==patnum2)
         if classnum==1:
-        	classnum=np.amax(Y)+1
-        	numerical_target=pd.DataFrame({'Class':Y[:,0].astype(int)})
+            classnum=np.amax(Y)+1
+            numerical_target=pd.DataFrame({'Class':Y[:,0].astype(int)})
         else:
-        	Y = pd.read_csv(solution_file, sep=' ', names = np.ravel(label_name))
-        	label_range = np.arange(classnum).transpose()         # This is just a column vector [[0], [1], [2]]
-        	numerical_target = Y.dot(label_range)                 # This is a column vector of dim patnum with numerical categories
+            Y = pd.read_csv(solution_file, sep=' ', names = np.ravel(label_name))
+            label_range = np.arange(classnum).transpose()         # This is just a column vector [[0], [1], [2]]
+            numerical_target = Y.dot(label_range)                 # This is a column vector of dim patnum with numerical categories
         #print(numerical_target)
         # Here we add the target values as a last column, this is convenient to use seaborn
         # Look at http://seaborn.pydata.org/tutorial/axis_grids.html for other ideas
@@ -307,7 +302,7 @@ else:
        
 
 
-def bias_spliter(df, percentage = 60, shuffle_styles = True): 
+def bias_spliter(df, percentage = 60, random_state=42, shuffle_styles = True): 
     """
     The method is taking a dataframe and it is generating a biased set. 
 
@@ -322,7 +317,7 @@ def bias_spliter(df, percentage = 60, shuffle_styles = True):
     styles = df['STYLE'].unique()
     
     if shuffle_styles : 
-        np.random.shuffle(styles)
+        random.Random(random_state).shuffle(styles)
         
     categories = categories.tolist() 
     styles = styles.tolist() 
@@ -383,12 +378,12 @@ def vprint(mode, t):
 def write(filename, predictions):
     ''' Write prediction scores in prescribed format'''
     with open(filename, "w") as output_file:
-                for row in predictions:
-                        if type(row) is not np.ndarray and type(row) is not list:
-                                row = [row]
-                        for val in row:
-                                output_file.write('{0:g} '.format(float(val)))
-                        output_file.write('\n')
+        for row in predictions:
+                if type(row) is not np.ndarray and type(row) is not list:
+                        row = [row]
+                for val in row:
+                        output_file.write('{0:g} '.format(float(val)))
+                output_file.write('\n')
 
 def zipdir(archivename, basedir):
     '''Zip directory, from J.F. Sebastian http://stackoverflow.com/'''
