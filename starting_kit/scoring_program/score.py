@@ -29,7 +29,7 @@ root_dir = "../"
 default_solution_dir = root_dir + "sample_data"
 default_prediction_dir = root_dir + "sample_result_submission"
 default_score_dir = root_dir + "scoring_output"
-default_data_name = "insect_challenge"
+default_data_name = "style_trans_fair_challenge"
 
 # Debug flag 0: no debug, 1: show all scores, 2: also show version amd listing of dir
 debug_mode = 0
@@ -81,7 +81,6 @@ if __name__ == "__main__":
     
     #Solution Arrays
     # 3 arrays: train, validation and test
-    print(solution_dir)
     solution_names, solutions, styles = read_solutions(solution_dir)
  
     for i, solution_name in enumerate(solution_names):

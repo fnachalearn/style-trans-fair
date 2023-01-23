@@ -85,7 +85,7 @@ default_input_dir = root_dir + "sample_data"
 default_output_dir = root_dir + "sample_result_submission"
 default_program_dir = root_dir + "ingestion_program"
 default_submission_dir = root_dir + "sample_code_submission"
-default_data_name = "insect_challenge"
+default_data_name = "style_trans_fair_challenge"
 
 # =============================================================================
 # =========================== END USER OPTIONS ================================

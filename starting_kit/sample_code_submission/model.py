@@ -11,7 +11,7 @@ import numpy as np   # We recommend to use numpy arrays
 from os.path import isfile
 from sklearn.base import BaseEstimator
 from sklearn.svm import LinearSVC, SVC
-import cv2
+from skimage.transform import resize
 
 class model (BaseEstimator):
     def __init__(self):
@@ -51,8 +51,8 @@ class model (BaseEstimator):
         
         flatt_img=[]
         for image in X:
-            img= cv2.resize(image, dsize=(54, 140), interpolation=cv2.INTER_CUBIC)
-            flatt_img.append(img.flatten())
+            image = resize(image, (64,64,3))
+            flatt_img.append(image.flatten())
             
         X=np.array(flatt_img)
         self.simple_model.fit(X,y)
@@ -92,8 +92,8 @@ class model (BaseEstimator):
         
         flatt_img=[]
         for image in X:
-            img= cv2.resize(image, dsize=(54, 140), interpolation=cv2.INTER_CUBIC)
-            flatt_img.append(img.flatten())
+            image = resize(image, (64,64,3))
+            flatt_img.append(image.flatten())
             
         X=np.array(flatt_img)
        

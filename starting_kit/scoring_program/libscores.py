@@ -76,10 +76,10 @@ def get_metric():
     return metric_name, scoring_function
 
 def read_array(filename):
-    ''' Read array and convert to 2d np arrays '''
-    array = np.genfromtxt(filename, dtype=str)
-    if len(array.shape) == 1:
-        array = array.reshape(-1, 1)
+    ''' Read array and convert to 1d np arrays '''
+    array = np.genfromtxt(filename, dtype=float)
+    if len(array.shape) == 2:
+        array = array.reshape(-1)
     return array
 
 
