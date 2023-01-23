@@ -1,0 +1,63 @@
+# One-size-fit-all YAML file to build an M2 [AI] 2020-2021 challenge bundle
+
+# DO NOT MODIFY
+
+# Isabelle Guyon -- May 13, 2019, updated Dec 10, 2020
+# Edited by Ihsan Ullah --- Nov 09, 2021
+
+version: 2
+title: Sample Insect Competition  
+description: Sample competition M2 [AI] 2022-2023
+image: logo.jpg
+has_registration: False                 # We do not check participants, registration is free
+force_submission_to_leaderboard: True   # If false, participants must submit manually, do not change
+disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
+enable_detailed_results: True           # True if html file written
+enable_forum: True                      # Forum active
+admin_names: guyon,pavao                # Admin people that can help you will have access to your competition
+docker_image: ihsaanullah/codalab-legacy:gpu
+end_date: null                          # Never ends
+terms: rules.html
+pages:  
+  - title: overview
+    file: overview.html
+  - title: evaluation
+    file: evaluation.html
+  - title: terms
+    file: rules.html
+  - title: data
+    file: data.html
+phases:
+  - index: 0
+    name: Phase 1
+    description: Phase 1 - Feedback Phase
+    start: 2022-12-01
+    end: 2023-12-01
+    color: green   
+    tasks:
+      - 0
+  - index: 1
+    name: Phase 2
+    description: Phase 2 - Final Phase
+    start: 2023-12-02
+    end: 2024-12-01
+    color: purple   
+    tasks:
+      - 0
+tasks:
+  - index: 0
+    name: Classification
+    description: Classification task for phase 1 and 2
+    scoring_program: scoring_program
+    ingestion_program: ingestion_program
+    input_data: sample_data/
+    # reference_data: reference_data/   
+leaderboards:
+  - title: Results
+    key: main
+    columns:
+      - title: score
+        key: auc
+        index: 0
+        sorting: desc
+
