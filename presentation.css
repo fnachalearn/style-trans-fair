@@ -1,0 +1,9 @@
+hr.solid {
+    border-top: 3px solid #bbb;
+}
+
+div.centered{
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+}
