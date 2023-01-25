@@ -1,0 +1,78 @@
+version: '2'
+title: STYLE-TRANS-FAIR
+docker_image: ihsaanullah/codalab-legacy:gpu
+queue: null
+description: Sample competition M1[AI] 2022-2023
+registration_auto_approve: true
+enable_detailed_results: true
+image: logo.jpg
+terms: terms.md
+pages:
+- title: Overview
+  file: overview.md
+- title: Data
+  file: data.md
+- title: Evaluation
+  file: evaluation.md
+- title: Terms
+  file: sub-terms.md
+tasks:
+- index: 0
+  name: Classification
+  description: Classification task for phase 1 and 2
+  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
+  is_public: false
+  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
+  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
+  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
+- index: 1
+  name: Classification
+  description: Classification task for phase 1 and 2
+  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
+  is_public: false
+  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
+  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
+  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
+solutions: []
+phases:
+- index: 0
+  name: Development Phase
+  description: "In this phase you can train a model and submit at most **5 submissions\
+    \ per day** to check the score of your model and to see how good your model is\
+    \ performing.    \n Once you are satisfied with your performance then you can\
+    \ try the Final Phase."
+  start: '2022-12-01'
+  end: '2023-12-01'
+  max_submissions_per_day: null
+  max_submissions: null
+  execution_time_limit: 600
+  auto_migrate_to_this_phase: false
+  hide_output: false
+  tasks:
+  - 1
+  solutions: []
+- index: 1
+  name: Final Phase
+  description: In this phase you can submit **only once** so it is advised to do it
+    when you are ready for the final submission.
+  start: '2023-12-02'
+  end: '2024-12-01'
+  max_submissions_per_day: null
+  max_submissions: null
+  execution_time_limit: 600
+  auto_migrate_to_this_phase: false
+  hide_output: false
+  tasks:
+  - 1
+  solutions: []
+leaderboards:
+- index: 0
+  title: Results
+  key: main
+  hidden: false
+  columns:
+  - title: score
+    key: auc
+    index: 0
+    sorting: desc
+    hidden: false
