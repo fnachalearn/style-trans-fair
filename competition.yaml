@@ -1,10 +1,13 @@
-version: '2'
+version: 2
 title: STYLE-TRANS-FAIR
-docker_image: ihsaanullah/codalab-legacy:gpu
-queue: null
 description: STYLE-TRANS-FAIR competition M1[AI] 2022-2023
-registration_auto_approve: true
-enable_detailed_results: true
+has_registration: True   
+force_submission_to_leaderboard: True   # If false, participants must submit manually, do not change
+disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
+enable_detailed_results: True           # True if html file written
+enable_forum: True                      # Forum active
+competition_docker_image: ihsaanullah/codalab-legacy:gpu
+end_date: null                          # Never ends
 image: images/logo.jpg
 terms: terms.md
 pages:
@@ -16,68 +19,44 @@ pages:
   file: evaluation.md
 - title: Terms
   file: sub-terms.md
-tasks:
-- index: 0
-  name: Classification
-  description: Classification task for phase 1 and 2
-  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
-  is_public: false
-  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
-  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
-  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
-- index: 1
-  name: Classification
-  description: Classification task for phase 1 and 2
-  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
-  is_public: false
-  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
-  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
-  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
-solutions: []
 phases:
-- index: 0
-  name: Development Phase
-  description: "In this phase you can train a model and submit at most **5 submissions\
+  - index: 0
+    name: Phase 1
+    description: "In this phase you can train a model and submit at most **5 submissions\
     \ per day** to check the score of your model and to see how good your model is\
     \ performing.    \n Once you are satisfied with your performance then you can\
     \ try the Final Phase."
-  start: '2022-12-01'
-  end: '2023-12-01'
-  max_submissions_per_day: null
-  max_submissions: null
-  execution_time_limit: 600
-  auto_migrate_to_this_phase: false
-  hide_output: false
-  tasks:
-  - 1
-  solutions: []
-- index: 1
-  name: Final Phase
-  description: In this phase you can submit **only once** so it is advised to do it
+    start: 2023-01-01
+    end: 2023-12-01
+    color: green   
+    tasks:
+      - 0
+  - index: 1
+    name: Phase 2
+    description: In this phase you can submit **only once** so it is advised to do it
     when you are ready for the final submission.
-  start: '2023-12-02'
-  end: '2024-12-01'
-  max_submissions_per_day: null
-  max_submissions: null
-  execution_time_limit: 600
-  auto_migrate_to_this_phase: false
-  hide_output: false
-  tasks:
-  - 1
-  solutions: []
+    start: 2024-01-01
+    end: 2024-12-01
+    color: purple   
+    tasks:
+      - 0
+
+tasks:
+  - index: 0
+    name: Classification
+    description: Classification task for phase 1
+    scoring_program: scoring_program
+    ingestion_program: ingestion_program
+    input_data: sample_data/
+    # reference_data: reference_data/    
 leaderboards:
-- index: 0
-  title: Results
-  key: main
-  hidden: false
-  columns:
-  - title: score
-    key: auc
-    index: 0
-    sorting: desc
-    hidden: false
-  - title: score
-    key: auc
-    index: 0
-    sorting: desc
-    hidden: false
+  - title: Results
+    key: main
+    columns:
+      - title: score
+        key: auc
+        index: 0
+        sorting: desc
+
+
+
