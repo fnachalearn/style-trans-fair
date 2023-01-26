@@ -2,7 +2,7 @@ version: '2'
 title: STYLE-TRANS-FAIR
 docker_image: ihsaanullah/codalab-legacy:gpu
 queue: null
-description: Sample competition M1[AI] 2022-2023
+description: STYLE-TRANS-FAIR competition M1[AI] 2022-2023
 registration_auto_approve: true
 enable_detailed_results: true
 image: images/logo.jpg
@@ -71,6 +71,11 @@ leaderboards:
   key: main
   hidden: false
   columns:
+  - title: score
+    key: auc
+    index: 0
+    sorting: desc
+    hidden: false
   - title: score
     key: auc
     index: 0
