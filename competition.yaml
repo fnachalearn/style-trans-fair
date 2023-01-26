@@ -6,16 +6,16 @@ description: Sample competition M1[AI] 2022-2023
 registration_auto_approve: true
 enable_detailed_results: true
 image: images/logo.jpg
-terms: rules.html
+terms: terms.md
 pages:
 - title: Overview
-  file: overview.html
+  file: overview.md
 - title: Data
-  file: data.html
+  file: data.md
 - title: Evaluation
-  file: evaluation.html
+  file: evaluation.md
 - title: Terms
-  file: rules.html
+  file: sub-terms.md
 tasks:
 - index: 0
   name: Classification
