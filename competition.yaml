@@ -5,7 +5,7 @@ queue: null
 description: Sample competition M1[AI] 2022-2023
 registration_auto_approve: true
 enable_detailed_results: true
-image: logo.jpg
+image: images/logo.jpg
 terms: terms.md
 pages:
 - title: Overview
