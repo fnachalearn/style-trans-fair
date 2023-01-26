@@ -26,7 +26,7 @@ from solution import read_solutions
 
 # Default I/O directories:
 root_dir = "../"
-default_solution_dir = root_dir + "public_data/task1"
+default_solution_dir = root_dir + "sample_data/task1"
 default_prediction_dir = root_dir + "sample_result_submission"
 default_score_dir = root_dir + "scoring_output"
 default_data_name = "style_trans_fair_challenge"
