@@ -75,9 +75,3 @@ leaderboards:
     key: auc
     index: 0
     sorting: desc
-    hidden: false
-  - title: score
-    key: auc
-    index: 0
-    sorting: desc
-    hidden: false
