@@ -86,11 +86,6 @@ if __name__ == "__main__":
     
     #Solution Arrays
     # 3 arrays: train, validation and test
-    print(os.listdir('/app'))
-    for i in os.listdir('/app/input'):
-        print(os.listdir('/app/input/'+i))
-    # print(os.listdir('/app/input'))
-    # print(os.listdir('/app/input/res'))
     solution_names, solutions, styles = read_solutions(os.path.join(solution_dir, 'task1'))
  
     for i, solution_name in enumerate(solution_names):
