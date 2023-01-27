@@ -28,7 +28,6 @@ tasks:
     ingestion_program: ingestion_program
     input_data: sample_data/
     reference_data: reference_data/ 
-
 phases:
 - index: 0
   name: Development Phase
