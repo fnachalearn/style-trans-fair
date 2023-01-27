@@ -81,7 +81,7 @@ save_previous_results = False
 # If no arguments to run.py are provided, this is where the data will be found
 # and the results written to. Change the root_dir to your local directory.
 root_dir = "../"
-default_input_dir = root_dir + "sample_data"
+default_input_dir = root_dir + "input_data"
 default_output_dir = root_dir + "sample_result_submission"
 default_program_dir = root_dir + "ingestion_program"
 default_submission_dir = root_dir + "sample_code_submission"
@@ -95,6 +95,7 @@ default_data_name = "style_trans_fair_challenge"
 version = 6 
 
 # General purpose functions
+import glob
 import time
 overall_start = time.time()         # <== Mark starting time
 import os
@@ -174,7 +175,8 @@ if __name__=="__main__" and debug_mode<4:
     #-------------------------------------------------------------
     # Read DATA 
     #-------------------------------------------------------------
-    data, meta_data = read_data(input_dir)
+    print(input_dir)
+    data, meta_data = read_data(os.path.join(input_dir, 'task1'))
 
     X_TRAIN = data["train_images"]
     Y_TRAIN = data["train_labels_num"]
