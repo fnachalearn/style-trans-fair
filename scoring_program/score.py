@@ -15,6 +15,9 @@
 
 # Some libraries and options
 import os
+import glob
+import json
+import time
 from sys import argv
 
 import libscores
@@ -26,7 +29,7 @@ from solution import read_solutions
 
 # Default I/O directories:
 root_dir = "../"
-default_solution_dir = root_dir + "sample_data/task1"
+default_solution_dir = root_dir + "input_data"
 default_prediction_dir = root_dir + "sample_result_submission"
 default_score_dir = root_dir + "scoring_output"
 default_data_name = "style_trans_fair_challenge"
@@ -43,6 +46,7 @@ scoring_version = 1.0
 # =============================== MAIN ========================================
 
 if __name__ == "__main__":
+    start = time.time()
 
     #### INPUT/OUTPUT: Get input and output directory names
     if len(argv) == 1:  # Use the default data directories if no arguments are provided
@@ -69,7 +73,8 @@ if __name__ == "__main__":
         
     # Create the output directory, if it does not already exist and open output files
     mkdir(score_dir)
-    score_file = open(os.path.join(score_dir, 'scores.txt'), 'w')
+    score_file = open(os.path.join(score_dir, 'scores.json'), 'w')
+    score_json = {}
     html_file = open(os.path.join(score_dir, 'scores.html'), 'w')
 
     # Get the metric
@@ -81,7 +86,12 @@ if __name__ == "__main__":
     
     #Solution Arrays
     # 3 arrays: train, validation and test
-    solution_names, solutions, styles = read_solutions(solution_dir)
+    print(os.listdir('/app'))
+    for i in os.listdir('/app/input'):
+        print(os.listdir('/app/input/'+i))
+    # print(os.listdir('/app/input'))
+    # print(os.listdir('/app/input/res'))
+    solution_names, solutions, styles = read_solutions(os.path.join(solution_dir, 'task1'))
  
     for i, solution_name in enumerate(solution_names):
         
@@ -128,18 +138,18 @@ if __name__ == "__main__":
             inst
 
         # Write score corresponding to selected task and metric to the output file
-        score_file.write(score_name + ": %0.12f\n" % score)
+        score_json[score_name] = score
 
     # End loop for solution_file in solution_names
 
     # Read the execution time and add it to the scores:
     try:
         metadata = yaml.load(open(os.path.join(input_dir, 'res', 'metadata'), 'r'))
-        score_file.write("Duration: %0.6f\n" % metadata['elapsedTime'])
+        score_json['duration'] = metadata['elapsedTime']
     except:
-        score_file.write("Duration: 0\n")
-
-        html_file.close()
+        score_json['duration'] = time.time() - start
+    html_file.close()
+    score_file.write(json.dumps(score_json))
     score_file.close()
 
     # Lots of debug stuff
