@@ -1,4 +1,4 @@
-# Starting kit for Insects Classification Challenge
+# Starting kit for STYLE-TRANS-FAIR Challenge
 
 This challenge uses a Dataset from **[Meta Album](https://meta-album.github.io/)**
 
@@ -6,7 +6,7 @@ This challenge uses a Dataset from **[Meta Album](https://meta-album.github.io/)
 
 # Introduction
 
-This challenge uses a Dataset from ***Meta Album***. 
+This challenge uses a Dataset from ***Meta Album***.
 
 This challenge's task is image classification, but using [Neural Style Transfered](https://en.wikipedia.org/wiki/Neural_style_transfer) images instead of original one. Here is a demo of an Apoidea:
 
@@ -14,14 +14,9 @@ This challenge's task is image classification, but using [Neural Style Transfere
 - The middle image is the painting style we are using for this image
 - The image on the right is the result of [Neural Style Transfer](https://en.wikipedia.org/wiki/Neural_style_transfer), and we need to classify this image as an Apoidea
 
-
-
 <center>
 <img src="images/demo_image.png" width="1200">
 </center>
-
-
-
 
 There are 5 tasks in the Development phase and 5 tasks in the Final Phase.
 Each task in the dataset consists of **360** images splited into 9 groups:

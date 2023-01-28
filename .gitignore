@@ -13,6 +13,7 @@
 *.msix
 *.msm
 *.msp
+*.zip
 
 ### VisualStudioCode ###
 .vscode/*
