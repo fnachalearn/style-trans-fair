@@ -40,13 +40,16 @@ class model (BaseEstimator):
         self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
         self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
         self.__model.add(tf.keras.layers.Flatten())
-        self.__model.add(tf.keras.layers.Dense(512, 
+        self.__model.add(tf.keras.layers.Dense(
+            512, 
             kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
             activation='relu'))
-        self.__model.add(tf.keras.layers.Dense(256, 
+        self.__model.add(tf.keras.layers.Dense(
+            256, 
             kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
             activation='relu'))
         self.__model.add(tf.keras.layers.Dense(number_of_classes, activation='softmax'))
+        
         self.__model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
 
@@ -74,34 +77,12 @@ class model (BaseEstimator):
                 
          '''
         
-        
-        # resized_img=[]
-        # for image in X:
-        #     image = resize(image, (64,64,3))
-        #     resized_img.append(image)
 
         self.enc.fit(y.reshape(-1,1))
         y = self.enc.transform(y.reshape(-1,1)).toarray()
 
-        print(y.shape)
-        print(X.shape)
-
         self.__model.fit(X, y, epochs=10, batch_size=4)
         
-            
-        # X=np.array(flatt_img)
-        # self.simple_model.fit(X,y)
-        
-        
-        # self.num_train_samples = X.shape[0]
-        # if X.ndim>1: self.num_feat = X.shape[1]
-        # print("FIT: dim(X)= [{:d}, {:d}]".format(self.num_train_samples, self.num_feat))
-        # num_train_samples = y.shape[0]
-        # if y.ndim>1: self.num_labels = y.shape[1]
-        # print("FIT: dim(y)= [{:d}, {:d}]".format(num_train_samples, self.num_labels))
-        # if (self.num_train_samples != num_train_samples):
-        #     print("ARRGH: number of samples in X and y do not match!")
-        # self.is_trained=True
 
     def predict(self, X):
         '''
