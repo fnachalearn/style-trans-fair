@@ -1,0 +1,17 @@
+{
+    "dataset_name" : "STYLE-TRANSFER-FAIR", 
+    "dataset_description" : "",
+    "total_categories" : 0,
+    "total_super_categories" : 0,
+    "total_styles" : 3,
+    "number_of_images_per_category" : 0,
+    "number_of_images_per_style" : 0,
+    "number_of_images_per_dominant_group" : 0,
+    "has_super_categories" : false,
+    "image_column_name" : "FILE_NAME",
+    "orig_category_image_column_name" : "ORIG_CATEGORY_FILE",
+    "orig_style_image_column_name" : "ORIG_STYLE_FILE",
+    "category_column_name" : "CATEGORY",
+    "super_category_column_name" : "SUPER_CATEGORY",
+    "style_column_name" : "STYLE"
+}

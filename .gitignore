@@ -36,4 +36,7 @@ __pycache__/
 
 ### sample_result_submission ###
 starting_kit/sample_result_submission/*
-sample_code_submission_*
+sample_code_submission/*.pickle
+*.pickle
+*.predict
+scoring_output/scores.*

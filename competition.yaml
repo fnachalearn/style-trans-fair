@@ -1,10 +1,14 @@
 version: '2'
 title: STYLE-TRANS-FAIR
 docker_image: ihsaanullah/codalab-legacy:gpu
-queue: null
-description: Sample competition M1[AI] 2022-2023
-registration_auto_approve: true
-enable_detailed_results: true
+description: STYLE-TRANS-FAIR competition M1[AI] 2022-2023
+has_registration: False                 # We do not check participants, registration is free
+force_submission_to_leaderboard: True   # If false, participants must submit manually, do not change
+disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
+enable_detailed_results: True           # True if html file written
+enable_forum: True                      # Forum active
+admin_names: guyon,pavao                # Admin people that can help you will have access to your competition
+end_date: null                          # Never ends
 image: images/logo.jpg
 terms: terms.md
 pages:
@@ -15,25 +19,15 @@ pages:
 - title: Evaluation
   file: evaluation.md
 - title: Terms
-  file: sub-terms.md
+  file: terms.md
 tasks:
-- index: 0
-  name: Classification
-  description: Classification task for phase 1 and 2
-  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
-  is_public: false
-  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
-  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
-  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
-- index: 1
-  name: Classification
-  description: Classification task for phase 1 and 2
-  key: 578fc53f-035e-4c66-9217-de5dc63f7d6f
-  is_public: false
-  input_data: 41aa1a59-6257-441f-a49d-9a682e128209
-  scoring_program: 737627a4-46f2-4a8a-bdf7-c7d86e8f68e4
-  ingestion_program: f5b4c4da-68cf-4c7f-9b14-28b47b853633
-solutions: []
+  - index: 0
+    name: Classification
+    description: Classification task for phase 1 and 2
+    scoring_program: scoring_program
+    ingestion_program: ingestion_program
+    input_data: sample_data/
+    reference_data: reference_data/ 
 phases:
 - index: 0
   name: Development Phase
@@ -49,7 +43,7 @@ phases:
   auto_migrate_to_this_phase: false
   hide_output: false
   tasks:
-  - 1
+  - 0
   solutions: []
 - index: 1
   name: Final Phase
@@ -63,7 +57,7 @@ phases:
   auto_migrate_to_this_phase: false
   hide_output: false
   tasks:
-  - 1
+  - 0
   solutions: []
 leaderboards:
 - index: 0
@@ -72,7 +66,6 @@ leaderboards:
   hidden: false
   columns:
   - title: score
-    key: auc
+    key: set2_score
     index: 0
     sorting: desc
-    hidden: false
