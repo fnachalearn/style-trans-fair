@@ -23,9 +23,8 @@ class model (BaseEstimator):
         This constructor is supposed to initialize data members.
         Use triple quotes for function documentation. 
         '''
-        self.num_train_samples=0
-        self.num_feat=1
-        self.num_labels=1
+
+        self.num_labels=number_of_classes
         self.is_trained=False
         self.enc = OneHotEncoder(handle_unknown='ignore')
         optimizer = tf.keras.optimizers.Adam(lr=1e-5)
