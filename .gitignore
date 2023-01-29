@@ -39,5 +39,4 @@ starting_kit/sample_result_submission/*
 sample_code_submission/*.pickle
 *.pickle
 *.predict
-scoring_output/*
-sample_result_submission/*
+scoring_output/scores.*
