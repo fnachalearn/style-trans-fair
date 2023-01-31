@@ -22,7 +22,7 @@ There are 5 tasks in the Development phase and 5 tasks in the Final Phase.
 Each task in the dataset consists of **360** images splited into 9 groups:
 
 <center>
-<img src="images/task_distribution.png" width="1200">
+<img src="images/data_distribution.png" width="1200">
 </center>
 
 where the training set is biased in Style, and the test set is balanced.
