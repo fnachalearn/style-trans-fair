@@ -111,6 +111,12 @@ if __name__ == "__main__":
             try:
                 # Compute the score prescribed by the metric file 
                 score = scoring_function(solution, prediction, style)
+
+
+                # DO WHATEVER YOU WANT HERE
+
+
+                # END DO WHATEVER YOU WANT HERE
                 print(
                     "======= Set %d" % set_num + " (" + data_name.capitalize() + "_" + solution_name + "): " + metric_name + "(" + score_name + ")=%0.12f =======" % score)
                 html_file.write(
