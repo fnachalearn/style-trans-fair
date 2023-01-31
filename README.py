@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
+# RIGHT NOW, PRIVATE REPOS DOES NOT SUPPORT IMAGES IN MARKDOWN
 from IPython.display import Image
-Image(filename="images/logo.jpg", width=200)
+Image(filename="images/dark_logo.jpg", width=200)
+# WE CHANGED IT IN THE STARTING KIT UPLOADED ON CODABENCH
 
 
 # <div style="background:#FFFFFF">
@@ -50,7 +52,9 @@ Image(filename="images/logo.jpg", width=200)
 # In[2]:
 
 
+# RIGHT NOW, PRIVATE REPOS DOES NOT SUPPORT IMAGES IN MARKDOWN
 Image(filename="images/task_distribution.png") 
+# WE CHANGED IT IN THE STARTING KIT UPLOADED ON CODABENCH
 
 
 # 
@@ -360,12 +364,6 @@ STYLE_TEST = data["test_styles"]
 Y_TEST = data["test_labels_num"]
 
 
-# In[45]:
-
-
-data['train_styles']
-
-
 # In[28]:
 
 
@@ -387,12 +385,6 @@ Y_hat_test = myModel.predict(X_TEST)
 # **IMPORTANT:** if you save the trained model, it will be bundled with your sample code submission. Therefore your model will NOT be retrained on the challenge platform. Remove the pickle from the submission if you want the model to be retrained on the platform.
 # 
 # **REQUIRED:** Trained model is required in the submission to codabench. 
-
-# In[30]:
-
-
-result_dir
-
 
 # In[31]:
 
@@ -428,12 +420,6 @@ print('Using scoring metric:', metric_name)
 #??scoring_function
 
 
-# In[33]:
-
-
-STYLE_TRAIN
-
-
 # ## Training performance
 
 # In[34]:
@@ -467,18 +453,6 @@ df_cm = pd.DataFrame(confusion_matrix_train, range(confusion_matrix_train.shape[
 sns.heatmap(df_cm, annot=True)
 plt.title("Train - Confustion Matrix")
 plt.show()
-
-
-# In[38]:
-
-
-Y_TEST.shape
-
-
-# In[39]:
-
-
-Y_hat_test.shape
 
 
 # In[40]:
