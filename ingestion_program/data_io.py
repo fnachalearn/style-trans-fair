@@ -80,19 +80,19 @@ def read_data(data_dir, random_state=42):
     # Check Images Directory
     if not os.path.exists(IMAGES_PATH):
         print('[-] Images directory Not Found')
-        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/dataformat-style-trans-fair/blob/main/README.MD')
         return
 
     #Check JSON file
     if not os.path.isfile(JSON_PATH):
         print('[-] JSON file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/dataformat-style-trans-fair/blob/main/README.MD')
         return
 
     #Check CSV file
     if not os.path.isfile(CSV_PATH):
         print('[-] CSV file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/fnachalearn/style-trans-fair/blob/main/starting_kit/sample_data/README.MD')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/dataformat-style-trans-fair/blob/main/README.MD')
         return
 
 

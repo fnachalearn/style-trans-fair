@@ -22,13 +22,13 @@ def read_solutions(data_dir, random_state=42):
     #Check JSON file
     if not os.path.isfile(JSON_PATH):
         print('[-] JSON file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/dataformat-style-trans-fair/blob/main/README.MD')
         return
 
     #Check CSV file
     if not os.path.isfile(CSV_PATH):
         print('[-] CSV file Not Found')
-        print('Make sure your dataset is in this format: https://github.com/ihsaan-ullah/meta-album/tree/master/DataFormat')
+        print('Make sure your dataset is in this format: https://github.com/fnachalearn/dataformat-style-trans-fair/blob/main/README.MD')
         return 
     
 
