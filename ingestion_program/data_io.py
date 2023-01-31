@@ -199,7 +199,7 @@ def read_data(data_dir, random_state=42):
     train_data = pd.concat(train_data)
     test_data = pd.concat(test_data)
 
-    train_data = bias_spliter(train_data,percentage=60,random_state=random_state)
+    train_data = bias_spliter(train_data,dominant_minority_ratio = 4,random_state=random_state)
 
     
     data_dict['train_labels'] = train_data[CATEGORY_COLUMN].values
@@ -302,7 +302,7 @@ else:
        
 
 
-def bias_spliter(df, percentage = 60, random_state=42, shuffle_styles = True): 
+def bias_spliter(df, dominant_minority_ratio = 4, random_state=42, shuffle_styles = True): 
     """
     The method is taking a dataframe and it is generating a biased set. 
 
@@ -330,10 +330,9 @@ def bias_spliter(df, percentage = 60, random_state=42, shuffle_styles = True):
             style_category_df = df[(df['STYLE'] == style) & (df['CATEGORY'] == category)]
             
             if index_style == index_category: 
-                pivot = percentage*len(style_category_df)//100
-                chunks.append(style_category_df[:pivot])
+                chunks.append(style_category_df)
             else: 
-                pivot = (100-percentage)//2*len(style_category_df)//100
+                pivot = len(style_category_df) // dominant_minority_ratio
                 chunks.append(style_category_df[:pivot])
                                                 
     
@@ -385,14 +384,18 @@ def write(filename, predictions):
                         output_file.write('{0:g} '.format(float(val)))
                 output_file.write('\n')
 
-def zipdir(archivename, basedir):
+def zipdir(archivename, basedir, exclude_folders=[], exclude_files=[]):
     '''Zip directory, from J.F. Sebastian http://stackoverflow.com/'''
     assert os.path.isdir(basedir)
     with closing(ZipFile(archivename, "w", ZIP_DEFLATED)) as z:
         for root, dirs, files in os.walk(basedir):
+            if any([root.endswith(exclude) for exclude in exclude_folders]):
+                continue
             #NOTE: ignore empty directories
             for fn in files:
-                if fn[-4:]!='.zip' and fn!='.DS_Store' :
+                if any([fn.endswith(exclude) for exclude in exclude_files]):
+                    continue
+                if fn[-4:]!='.zip' and fn!='.DS_Store' :    
                     absfn = os.path.join(root, fn)
                     zfn = absfn[len(basedir):] #XXX: relative path
                     z.write(absfn, zfn)
