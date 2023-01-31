@@ -201,7 +201,7 @@ if __name__=="__main__" and debug_mode<4:
     
     # ========= Creating a model 
     vprint( verbose,  "======== Creating model ==========")
-    M = model()
+    M = model(len(data['train_df']['CATEGORY'].unique()),data["train_images"][0].shape)
     
     # ========= Reload trained model if it exists
     vprint( verbose,  "**********************************************************")
