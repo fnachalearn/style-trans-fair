@@ -385,14 +385,18 @@ def write(filename, predictions):
                         output_file.write('{0:g} '.format(float(val)))
                 output_file.write('\n')
 
-def zipdir(archivename, basedir):
+def zipdir(archivename, basedir, exclude_folders=[], exclude_files=[]):
     '''Zip directory, from J.F. Sebastian http://stackoverflow.com/'''
     assert os.path.isdir(basedir)
     with closing(ZipFile(archivename, "w", ZIP_DEFLATED)) as z:
         for root, dirs, files in os.walk(basedir):
+            if any([root.endswith(exclude) for exclude in exclude_folders]):
+                continue
             #NOTE: ignore empty directories
             for fn in files:
-                if fn[-4:]!='.zip' and fn!='.DS_Store' :
+                if any([fn.endswith(exclude) for exclude in exclude_files]):
+                    continue
+                if fn[-4:]!='.zip' and fn!='.DS_Store' :    
                     absfn = os.path.join(root, fn)
                     zfn = absfn[len(basedir):] #XXX: relative path
                     z.write(absfn, zfn)

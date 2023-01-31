@@ -27,7 +27,7 @@ class model (BaseEstimator):
         self.num_labels=number_of_classes
         self.is_trained=False
         self.enc = OneHotEncoder(handle_unknown='ignore')
-        optimizer = tf.keras.optimizers.Adam(lr=1e-5)
+        optimizer = tf.keras.optimizers.legacy.Adam(lr=1e-5)
 
         self.__model = tf.keras.Sequential()
         self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
@@ -79,8 +79,9 @@ class model (BaseEstimator):
 
         self.enc.fit(y.reshape(-1,1))
         y = self.enc.transform(y.reshape(-1,1)).toarray()
-
-        self.__model.fit(X, y, epochs=10, batch_size=4)
+        # Run training on CPU
+        with tf.device('/cpu:0'):
+            self.__model.fit(X, y, epochs=10, batch_size=4)
         
 
     def predict(self, X):
@@ -106,7 +107,11 @@ class model (BaseEstimator):
          '''
         
 
-        return np.argmax(self.__model.predict(X),axis=1)
+        # Run inference on CPU
+        with tf.device('/cpu:0'):
+            result = self.__model.predict(X)
+
+        return np.argmax(result, axis=1)
             
 
 
