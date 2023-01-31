@@ -80,7 +80,7 @@ class model (BaseEstimator):
         self.enc.fit(y.reshape(-1,1))
         y = self.enc.transform(y.reshape(-1,1)).toarray()
         # Run training on CPU
-        with tf.device('/cpu:0'):
+        with tf.device('/gpu:0'):
             self.__model.fit(X, y, epochs=10, batch_size=4)
         
 
