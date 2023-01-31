@@ -49,7 +49,7 @@ phases:
   name: Final Phase
   description: In this phase you can submit **only once** so it is advised to do it
     when you are ready for the final submission.
-  start: '2023-12-02'
+  start: '2023-12-03'
   end: '2024-12-01'
   max_submissions_per_day: null
   max_submissions: null
