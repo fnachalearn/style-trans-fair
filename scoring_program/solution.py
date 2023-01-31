@@ -95,7 +95,7 @@ def read_solutions(data_dir, random_state=42):
     train_data = pd.concat(train_data)
     test_data = pd.concat(test_data)
 
-    train_data = bias_spliter(train_data,percentage=60,random_state=random_state)
+    train_data = bias_spliter(train_data,dominant_minority_ratio = 4,random_state=random_state)
 
     print("###-------------------------------------###")
     print("### Train solutions : ", train_data.shape[0])
@@ -156,7 +156,7 @@ def read_solutions(data_dir, random_state=42):
     # return (solution_names,solutions,styles)
 
 
-def bias_spliter(df, percentage = 60, random_state=42, shuffle_styles = True): 
+def bias_spliter(df, dominant_minority_ratio = 4, random_state=42, shuffle_styles = True): 
     """
     The method is taking a dataframe and it is generating a biased set. 
 
@@ -184,10 +184,9 @@ def bias_spliter(df, percentage = 60, random_state=42, shuffle_styles = True):
             style_category_df = df[(df['STYLE'] == style) & (df['CATEGORY'] == category)]
             
             if index_style == index_category: 
-                pivot = percentage*len(style_category_df)//100
-                chunks.append(style_category_df[:pivot])
+                chunks.append(style_category_df)
             else: 
-                pivot = (100-percentage)//2*len(style_category_df)//100
+                pivot = len(style_category_df) // dominant_minority_ratio
                 chunks.append(style_category_df[:pivot])
                                                 
     
