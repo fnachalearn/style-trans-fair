@@ -50,7 +50,7 @@ This challenge conists of two phases:
 
 ### Prerequisites:
 
-Install Anaconda Python 3.8
+Install Anaconda and create an environment with Python 3.8 (RECOMMENDED)
 
 ### Usage:
 

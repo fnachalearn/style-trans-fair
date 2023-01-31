@@ -34,5 +34,6 @@ def geometric_mean_accuracy_metric(solution, prediction, style_solution):
         for style in np.unique(style_solution):
             group_index = np.where((solution==category) & (style_solution==style))
             group_accuracies.append(accuracy_score(solution[group_index],prediction[group_index]))
+    print(group_accuracies)
     score = gmean(group_accuracies)
     return score
