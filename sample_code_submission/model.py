@@ -24,10 +24,14 @@ class model (BaseEstimator):
         Use triple quotes for function documentation. 
         '''
 
+        self.epochs = 10
+        self.batch_size = 4
+        self.initial_learning_rate = 0.001
+
         self.num_labels=number_of_classes
         self.is_trained=False
         self.enc = OneHotEncoder(handle_unknown='ignore')
-        optimizer = tf.keras.optimizers.legacy.Adam(lr=1e-5)
+        
 
         self.__model = tf.keras.Sequential()
         self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
@@ -49,7 +53,6 @@ class model (BaseEstimator):
             activation='relu'))
         self.__model.add(tf.keras.layers.Dense(number_of_classes, activation='softmax'))
         
-        self.__model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
 
 
@@ -75,13 +78,21 @@ class model (BaseEstimator):
                 the fit function.
                 
          '''
-        
+
 
         self.enc.fit(y.reshape(-1,1))
         y = self.enc.transform(y.reshape(-1,1)).toarray()
+
+
+        total_steps = len(X) * self.epochs // self.batch_size
+        lr_decayed_fn = tf.keras.optimizers.schedules.CosineDecay(
+            self.initial_learning_rate, total_steps)
+        optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=lr_decayed_fn)
+        self.__model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
         # Run training on CPU
-        with tf.device('/gpu:0'):
-            self.__model.fit(X, y, epochs=10, batch_size=4)
+        with tf.device('/cpu:0'):
+            self.__model.fit(X, y, epochs=self.epochs, batch_size=self.batch_size)
         
 
     def predict(self, X):
