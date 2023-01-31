@@ -96,6 +96,7 @@ version = 6
 
 # General purpose functions
 import glob
+import numpy as np
 import time
 overall_start = time.time()         # <== Mark starting time
 import os
@@ -201,7 +202,8 @@ if __name__=="__main__" and debug_mode<4:
     
     # ========= Creating a model 
     vprint( verbose,  "======== Creating model ==========")
-    M = model(len(data['train_df']['CATEGORY'].unique()),data["train_images"][0].shape)
+    M = model(len(np.unique(data['train_labels'])),data["train_images"][0].shape)
+
     
     # ========= Reload trained model if it exists
     vprint( verbose,  "**********************************************************")
