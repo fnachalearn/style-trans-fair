@@ -12,18 +12,49 @@ from os.path import isfile
 from sklearn.base import BaseEstimator
 from sklearn.svm import LinearSVC, SVC
 from skimage.transform import resize
+import tensorflow as tf
+from tensorflow.keras import regularizers as reug
+from sklearn.preprocessing import OneHotEncoder
+
 
 class model (BaseEstimator):
-    def __init__(self):
+    def __init__(self, number_of_classes, input_shape):
         '''
         This constructor is supposed to initialize data members.
         Use triple quotes for function documentation. 
         '''
-        self.num_train_samples=0
-        self.num_feat=1
-        self.num_labels=1
+
+        self.epochs = 10
+        self.batch_size = 4
+        self.initial_learning_rate = 0.001
+
+        self.num_labels=number_of_classes
         self.is_trained=False
-        self.simple_model=SVC(kernel='linear') # here we intialize our model
+        self.enc = OneHotEncoder(handle_unknown='ignore')
+        
+
+        self.__model = tf.keras.Sequential()
+        self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
+        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        self.__model.add(tf.keras.layers.Flatten())
+        self.__model.add(tf.keras.layers.Dense(
+            512, 
+            kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
+            activation='relu'))
+        self.__model.add(tf.keras.layers.Dense(
+            256, 
+            kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
+            activation='relu'))
+        self.__model.add(tf.keras.layers.Dense(number_of_classes, activation='softmax'))
+        
+
+
 
     def fit(self, X, y):
         '''
@@ -47,26 +78,22 @@ class model (BaseEstimator):
                 the fit function.
                 
          '''
+
+
+        self.enc.fit(y.reshape(-1,1))
+        y = self.enc.transform(y.reshape(-1,1)).toarray()
+
+
+        total_steps = len(X) * self.epochs // self.batch_size
+        lr_decayed_fn = tf.keras.optimizers.schedules.CosineDecay(
+            self.initial_learning_rate, total_steps)
+        optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=lr_decayed_fn)
+        self.__model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
+        # Run training on CPU
+        with tf.device('/cpu:0'):
+            self.__model.fit(X, y, epochs=self.epochs, batch_size=self.batch_size)
         
-        
-        flatt_img=[]
-        for image in X:
-            image = resize(image, (64,64,3))
-            flatt_img.append(image.flatten())
-            
-        X=np.array(flatt_img)
-        self.simple_model.fit(X,y)
-        
-        
-        self.num_train_samples = X.shape[0]
-        if X.ndim>1: self.num_feat = X.shape[1]
-        print("FIT: dim(X)= [{:d}, {:d}]".format(self.num_train_samples, self.num_feat))
-        num_train_samples = y.shape[0]
-        if y.ndim>1: self.num_labels = y.shape[1]
-        print("FIT: dim(y)= [{:d}, {:d}]".format(num_train_samples, self.num_labels))
-        if (self.num_train_samples != num_train_samples):
-            print("ARRGH: number of samples in X and y do not match!")
-        self.is_trained=True
 
     def predict(self, X):
         '''
@@ -90,25 +117,14 @@ class model (BaseEstimator):
                 
          '''
         
-        flatt_img=[]
-        for image in X:
-            image = resize(image, (64,64,3))
-            flatt_img.append(image.flatten())
+
+        # Run inference on CPU
+        with tf.device('/cpu:0'):
+            result = self.__model.predict(X)
+
+        return np.argmax(result, axis=1)
             
-        X=np.array(flatt_img)
-       
-        y_pred=self.simple_model.predict(X)
-        
-        num_test_samples = X.shape[0]
-        if X.ndim>1: num_feat = X.shape[1]
-        print("PREDICT: dim(X)= [{:d}, {:d}]".format(num_test_samples, num_feat))
-        if (self.num_feat != num_feat):
-            print("ARRGH: number of features in X does not match training data!")
-        print("PREDICT: dim(y)= [{:d}, {:d}]".format(num_test_samples, self.num_labels))
-        y = np.zeros([num_test_samples, self.num_labels])
-        # If you uncomment the next line, you get pretty good results for the Iris data :-)
-        #y = np.round(X[:,3])
-        return y_pred
+
 
     def save(self, path="./"):
         pickle.dump(self, open(path + '_model.pickle', "wb"))
