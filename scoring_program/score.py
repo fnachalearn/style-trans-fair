@@ -26,6 +26,9 @@ import yaml
 from libscores import *
 import solution       
 from solution import read_solutions
+from sklearn import metrics
+import matplotlib.pyplot as plt
+import base64
 
 # Default I/O directories:
 root_dir = "../"
@@ -87,6 +90,8 @@ if __name__ == "__main__":
     #Solution Arrays
     # 3 arrays: train, validation and test
     solution_names, solutions, styles = read_solutions(os.path.join(solution_dir, 'task1'))
+
+    html_file.write("<h3>Scoring output of your submission</h3>")
  
     for i, solution_name in enumerate(solution_names):
         
@@ -111,16 +116,36 @@ if __name__ == "__main__":
             try:
                 # Compute the score prescribed by the metric file 
                 score = scoring_function(solution, prediction, style)
-
-
-                # DO WHATEVER YOU WANT HERE
-
-
-                # END DO WHATEVER YOU WANT HERE
                 print(
                     "======= Set %d" % set_num + " (" + data_name.capitalize() + "_" + solution_name + "): " + metric_name + "(" + score_name + ")=%0.12f =======" % score)
                 html_file.write(
-                    "<pre>======= Set %d" % set_num + " (" + data_name.capitalize() + "_" + solution_name + "): " + metric_name + "(" + score_name + ")=%0.12f =======\n" % score)
+                    "<pre>======= Set %d" % set_num + " (" + data_name.capitalize() + "_" + solution_name + "): " + metric_name + "(" + score_name + ")=%0.12f =======\n</pre>" % score)
+
+                # Plot the confusion matrix, save it in a file, encode it, put it in the html and delete the file
+                conf_matrix=metrics.confusion_matrix(solution,prediction)
+                fig, ax = plt.subplots(figsize=(7.5, 7.5))
+                ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
+                for i in range(conf_matrix.shape[0]):
+                    for j in range(conf_matrix.shape[1]):
+                        ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+                
+                plt.xlabel('Predictions', fontsize=18)
+                plt.ylabel('Actuals', fontsize=18)
+                plt.title('Confusion Matrix', fontsize=18)
+                plt.savefig("confusion_matrix.png")
+                try:
+                    filepath="confusion_matrix.png"
+                    binary_fc = open(filepath, 'rb').read()
+                    base64_utf8_str = base64.b64encode(binary_fc).decode('utf-8')
+                    ext = filepath.split('.')[-1]
+                    dataurl = f'data:image/{ext};base64,{base64_utf8_str}'
+                    html_file.write("<img src="+dataurl+" alt='Confusion Matrix' width='250'/>")
+                    os.remove(filepath)
+                except Exception as err:
+                    print("Error while encoding the confusion matrix plot",err)
+                    raise Exception('Error while encoding the confusion matrix plot')
+                # End of ploting confusion matrix
+
             except:
                 print("#--ERROR--# Error in calculation of the specific score of the task")
                 raise Exception('Error in calculation of the specific score of the task')
