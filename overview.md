@@ -1,13 +1,13 @@
 # ✅ Competition overview
 ---
-Many datasets are plagued by bias, but not just fairness related bias. For instance, image datasets, background is a source of bias (example: airplanes in the sky…). Classifiers may be induced to rely on background. So, we designed a dataset with bias. Indeed, the idea was to induce a bias by using the ***style transfer***, to create fake paintings whose style is in correlation with the subject to be recognized.
+Over the past few years, society has been grappling with the extent to which human biases can be incorporated into artificial intelligence systems, leading to harmful consequences. With the proliferation of big data, optimizing AI systems solely for performance will not only fail to improve real-world applications, but also increase the risk of bias in ways that may not be immediately apparent.
 
-***STYLE-TRANS-FAIR*** challenge aims at detecting bias in image data, making sure deep-learning methods do not base classification decisions on the style of an image rather than recognizing the objects or animals. 
+Many datasets are plagued by bias. For instance, background is a big source of bias in image datasets (e.g planes usually have sky backgrounds, boats usually have water backgrounds, etc) which causes machine learning models to learn its noise (e.g classify all sky backgrounds as planes, or all water backgrounds as boats, etc).
+To mimic this effect, we introduce a creative way to add controlled bias into the dataset, which is called Neural Style Transfer. This method can be generalized to all kinds of domains and also requires little to no manual work when creating synthetic images.
 
-- **Main goal of this competition** : The main goal is about creating a Machine Learning model and train it with the data provided to classify the images into 3 Classes without being biased towards Styles. 
+## Main goal of this competition
 
-This challenge uses a Dataset from **Meta Album**. There are *5 tasks in the Development phase* and *5 tasks in the Final Phase*. Each task in the dataset consists of **360** images splited into **9 groups**. we also have 2 set : the training and test set, where **the training set is biased in Style, and the test set is balanced**. (You can see the data section to know more about the data and the distribution of the task please).
-
+The goal of this challenge is to perform multi-task classification with a training dataset biased towards Styles. You will need to make sure it performs well on an unbiased test dataset. More info can be found in Data tab.
 
 
 # ✅ Competition Phases
@@ -17,19 +17,27 @@ This challenge consists of two phases :
 
 > - **Final Phase** : In this phase you can submit only once so it is advised to do it when you are ready for the final submission.
 
-# ✅ Who can take part ?
+# ✅ Who can take part?
 ---
-Anyone interested in machine learning and who would like to improve their skills can participate in this competition. So don't miss this opportunity and try your luck.
+Anyone interested in machine learning and who would like to improve their skills can participate in this competition. So don't miss this opportunity and do your best.
 
 **Note** : No prizes, this is an educational challenge.
+
+# ✅ How to join the challenge?
+---
+Instructions:
+- Click "My Submissions" tab 
+- Accept terms and conditions
+- Click Register button
+
 
 # ✅ Who are we?
 ---
 We are the ***Fairness National Assembly*** 😃 composed of :
-> - **Khuong T.G.H**
+> - **Khuong Thanh Gia Hieu**
 > - **Quentin Le Tellier**
-> - **Benedictus Kent**
-> - **Alex-Razvan**
+> - **Benedictus Kent Rachmat**
+> - **Alex-Răzvan Ispas**
 > - **Junior Cedric Tonga**
 
 We are the organizers of this competition under the supervision of some teachers(see references section).

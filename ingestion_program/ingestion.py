@@ -97,6 +97,7 @@ version = 6
 # General purpose functions
 import glob
 import numpy as np
+import gc
 import time
 overall_start = time.time()         # <== Mark starting time
 import os
@@ -256,6 +257,9 @@ if __name__=="__main__" and debug_mode<4:
     else:
         vprint( verbose,  "[-] Done, but some tasks aborted because time limit exceeded")
         vprint( verbose,  "[-] Overall time spent %5.2f sec " % overall_time_spent + " > Overall time budget %5.2f sec" % overall_time_budget)
+    
+    del X_TEST, X_TRAIN, Y_TEST, Y_TRAIN, Y_test, Y_train, data, meta_data, M
+    gc.collect()
               
 
 
