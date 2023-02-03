@@ -88,7 +88,6 @@ The metrics used for this challenge is the geometric mean accuracy. For each gro
 <div style="margin-left:20px"><i>Geometric mean formula</i></div>
 </div>
 
-
 ---
 
 # Prerequisites

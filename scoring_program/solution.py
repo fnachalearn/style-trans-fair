@@ -107,7 +107,6 @@ def read_solutions(data_dir, random_state=42):
 
     train_styles =  train_data[STYLE_COLUMN].values
     test_styles = test_data[STYLE_COLUMN].values
-    
     solutions = [train_solution, test_solution]
     styles = [train_styles, test_styles]
     solution_names = ['train', 'test']
@@ -117,44 +116,6 @@ def read_solutions(data_dir, random_state=42):
     print("###-------------------------------------###\n\n")
     
     return solution_names, solutions, styles
-
-
-    # #----------------------------------------------------------------
-    # # Categories
-    # #----------------------------------------------------------------
-
-    # categories = train_df['CATEGORY'].unique()
-    # total_categories = len(categories)
-
-    # #----------------------------------------------------------------
-    # # Styles
-    # #----------------------------------------------------------------
-
-    # styles = train_df['STYLE'].unique()
-    # total_styles = len(styles)
-
-    # print("###-------------------------------------###")
-    # print("### Train solutions : ", train_df.shape[0])
-    # print("### Test solutions : ", test_df.shape[0])
-    # print("###-------------------------------------###\n\n")
-    
-    
-    # train_solution =  train_df['CATEGORY'].values
-    # test_solution = test_df['CATEGORY'].values
-
-    # train_styles =  train_df['STYLE'].values
-    # test_styles =  test_df['STYLE'].values
-    
-    # solutions = [train_solution, test_solution]
-    # styles = [train_styles, test_styles]
-    # solution_names = ['train', 'test']
-    
-    # print("###-------------------------------------###")
-    # print("### Solutions files are ready!")
-    # print("###-------------------------------------###\n\n")
-    
-    # return (solution_names,solutions,styles)
-
 
 def bias_spliter(df, dominant_minority_ratio = 4, random_state=42, shuffle_styles = True): 
     """
