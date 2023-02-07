@@ -49,3 +49,5 @@ We also thank the following people for their support and supervision :
 >- [Meta Album](https://meta-album.github.io/)
 > - [Université Paris Saclay](https://www.universite-paris-saclay.fr/)
 > - [ChaLearn](http://www.chalearn.org/)
+
+If you have any question, please send an email to fna@chalearn.org. Our team will answer as soon as possible.
