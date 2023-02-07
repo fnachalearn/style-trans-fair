@@ -45,15 +45,18 @@ This challenge's task is image classification, but using [Neural Style Transfere
 </center>
 
 There are approximately 200 tasks in the Development phase and 200 tasks in the Final Phase.
-Each task in the dataset consists of **360** images splited into 9 groups:
+Each task in the dataset consists of a BIASED training set with **90** images, and a BALANCED test set with **180** images, each splited into 9 groups as shown below. The number represents the number of samples per group.
+You can see there are 3 groups with 20 examples, 4 times the others, so your model is more likely to be biased towards these group, misclassifying those with Style 2 as Class 2 because of this. Your job is to mitigate this bias as much as possible.
 
 <center>
 <img src="https://raw.githubusercontent.com/fnachalearn/style-trans-fair/main/images/data_distribution.jpg" width="800">
 </center>
 
-where the training set is biased in Style, and the test set is balanced.
+**Caution:** Only the training set is imbalance, whereas the test set is balanced.
 
-The sample dataset in this starting kit conists of **360** images of the Insect classification task.
+The sample dataset in this starting kit conists of **1 task**.
+The public data consists of **3 more tasks** for you to play with.
+The dataset we use to evaluate your model consists of **200 tasks**.
 
 # ✅ Data description
 
