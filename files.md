@@ -13,3 +13,5 @@ You can also download and get a head start with this kit. This kit provides one 
 Here you can download the provided public data. This data contains 3 more tasks for you try your hands on.
 
 **Reminder**: after submitting your code, a new model will be trained and tested on 200 new tasks in the Development Phase and 200 other tasks in the Final Phase that is not visible to you.
+
+You can either download the local version or use the one from the google colab link provided in the `Overview` menu.
