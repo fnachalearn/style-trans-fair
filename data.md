@@ -44,14 +44,12 @@ This challenge's task is image classification, but using [Neural Style Transfere
 <img src="https://raw.githubusercontent.com/fnachalearn/style-trans-fair/main/images/demo_image.png" width="800">
 </center>
 
-This competition consists of 20 style classes with 40 images each and 20 content classes with 40 images each. in total we have 400 tasks. Each task is made by randomly sampling 3 style classes and 3 content classes.
+This competition consists of 20 style classes with 40 images each and 20 content classes with 40 images each. In total we have 400 tasks. Each task is made by randomly sampling 3 style classes and 3 content classes.
 
 There are approximately 200 tasks in the Development phase and 200 tasks in the Final Phase.
 Each task in the dataset consists of **360** images splited into 9 groups:
 
-<center>
 <img src="https://raw.githubusercontent.com/fnachalearn/style-trans-fair/main/images/data_distribution.jpg" width="800">
-</center>
 
 where the training set is biased in Style, and the test set is balanced.
 
