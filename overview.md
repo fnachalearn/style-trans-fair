@@ -42,10 +42,13 @@ We are the ***Fairness National Assembly*** 😃 composed of :
 
 We are the organizers of this competition under the supervision of some teachers(see references section).
 
+## ✅ Google colab
+> - [Notebook](https://colab.research.google.com/drive/1sXOEQMEM8vkWRKDqkTtFc-Mvv6Ffm3M0?usp=sharing)
+
 ## ✅ References and credits
 ---
 We also thank the following people for their support and supervision : 
 > - **Isabelle Guyon, Ihsan Ullah, Sergio and  Birhanu (with the help of Ahmad)**
->- [Meta Album](https://meta-album.github.io/)
+> - [Meta Album](https://meta-album.github.io/)
 > - [Université Paris Saclay](https://www.universite-paris-saclay.fr/)
 > - [ChaLearn](http://www.chalearn.org/)

@@ -106,6 +106,9 @@ Install Anaconda and create an environment with Python 3.8 (RECOMMENDED)
   `python ingestion_program/ingestion.py public_data sample_result_submission ingestion_program sample_code_submission`
 - zip the contents of sample_result_submission (without the directory).
 
+# Google colab 
+
+- starting kit (https://colab.research.google.com/drive/1sXOEQMEM8vkWRKDqkTtFc-Mvv6Ffm3M0?usp=sharing)
 # References and credits
 
 - Meta Album (https://meta-album.github.io/)
