@@ -7,9 +7,9 @@ This challenge conists of two phases:
 2. **Final Phase**
    In this phase you can submit **only once** so it is advised to do it when you are ready for the final submission. Your performance on the test set will be displayed on the final leaderboard.In this phase you can submit only once so it is advised to do it when you are ready for the final submission
 
-# ✅  Metrics
+# ✅  Metric
 
-The metrics used for this challenge is the geometric mean accuracy. For each group with the same style and class, an accuracy score is computed. The final output corresponds to the geometric mean of those accuracies.
+The metric used for this challenge is the geometric mean accuracy. For each group with the same style and class, an accuracy score is computed. The final output corresponds to the geometric mean of those accuracies.
 
 <div style="margin-left:20px">
 <img src="https://raw.githubusercontent.com/fnachalearn/style-trans-fair/main/images/geometric_mean.svg" width="400">
