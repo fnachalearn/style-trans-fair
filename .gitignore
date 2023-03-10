@@ -40,3 +40,5 @@ sample_code_submission/*.pickle
 *.pickle
 *.predict
 scoring_output/scores.*
+private_data/
+public_data/

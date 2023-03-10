@@ -9,7 +9,7 @@ import random
 
 # ================ Small auxiliary functions =================
 
-def read_solutions(data_dir, random_state=42):
+def read_solutions(data_dir, task_number, random_state=42):
     ''' Function to read the Labels from CSV files'''
 
 
@@ -17,7 +17,7 @@ def read_solutions(data_dir, random_state=42):
     # Settings
     #----------------------------------------------------------------
     JSON_PATH = os.path.join(data_dir,"info.json")
-    CSV_PATH = os.path.join(data_dir,"labels.csv")
+    CSV_PATH = os.path.join(data_dir, "tasks", f"labels{task_number}.csv")
     
     #Check JSON file
     if not os.path.isfile(JSON_PATH):
