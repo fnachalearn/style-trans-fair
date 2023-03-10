@@ -47,7 +47,7 @@ import platform
 
 # ================ Small auxiliary functions =================
 
-def read_data(data_dir, random_state=42):
+def read_data(data_dir, task_number, random_state=42):
 
     """ 
     Function to read the Images in raw format
@@ -70,7 +70,7 @@ def read_data(data_dir, random_state=42):
     #----------------------------------------------------------------
     IMAGES_PATH = os.path.join(data_dir,"stylized")
     JSON_PATH = os.path.join(data_dir,"info.json")
-    CSV_PATH = os.path.join(data_dir,"labels.csv")
+    CSV_PATH = os.path.join(data_dir, "tasks", f"labels{task_number}.csv")
 
 
     #----------------------------------------------------------------

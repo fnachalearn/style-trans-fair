@@ -2,6 +2,7 @@ version: '2'
 title: STYLE-TRANS-FAIR
 docker_image: ktgiahieu/codalab-legacy-with-tensorflow:3.8
 description: STYLE-TRANS-FAIR competition M1[AI] 2022-2023
+submission_rule: "Force_Last"
 has_registration: False                 # We do not check participants, registration is free
 force_submission_to_leaderboard: True   # If false, participants must submit manually, do not change
 disallow_leaderboard_modifying: True    # If true, submissions cannot be changed

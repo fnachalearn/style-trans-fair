@@ -24,7 +24,7 @@ class model (BaseEstimator):
         Use triple quotes for function documentation. 
         '''
 
-        self.epochs = 10
+        self.epochs = 3
         self.batch_size = 4
         self.initial_learning_rate = 0.001
 
@@ -36,17 +36,17 @@ class model (BaseEstimator):
         self.__model = tf.keras.Sequential()
         self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
         self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
-        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        # self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+        # self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
         self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
         self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
-        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+        # self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+        # self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
         self.__model.add(tf.keras.layers.Flatten())
-        self.__model.add(tf.keras.layers.Dense(
-            512, 
-            kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
-            activation='relu'))
+        # self.__model.add(tf.keras.layers.Dense(
+        #     512, 
+        #     kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
+        #     activation='relu'))
         self.__model.add(tf.keras.layers.Dense(
             256, 
             kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),

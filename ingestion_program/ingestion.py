@@ -178,89 +178,104 @@ if __name__=="__main__" and debug_mode<4:
     # Read DATA 
     #-------------------------------------------------------------
     print(input_dir)
-    data, meta_data = read_data(os.path.join(input_dir, 'task1'))
+    for task_n in range(10):
+        # Check if a file exists
+        if not os.path.isfile(os.path.join(input_dir, "tasks", f"labels{task_n}.csv")):
+            continue
+        try:
+            print("Starting task {}".format(task_n))
+            data, meta_data = read_data(input_dir, task_number=task_n)
 
-    X_TRAIN = data["train_images"]
-    Y_TRAIN = data["train_labels_num"]
-    X_TEST = data["test_images"]
-    Y_TEST = data["test_labels_num"]
-    
+            X_TRAIN = data["train_images"]
+            Y_TRAIN = data["train_labels_num"]
+            X_TEST = data["test_images"]
+            Y_TEST = data["test_labels_num"]
+            
 
 
-    # ======== Keeping track of time
-    time_budget = max_time
-        
-    overall_time_budget = overall_time_budget + time_budget
-    vprint( verbose,  "[+] Cumulated time budget (all tasks so far)  %5.2f sec" % (overall_time_budget))
-    # We do not add the time left over form previous dataset: time_budget += time_left_over
-    vprint( verbose,  "[+] Time budget for this task %5.2f sec" % time_budget)
-    time_spent = time.time() - start
-    vprint( verbose,  "[+] Remaining time after reading data %5.2f sec" % (time_budget-time_spent))
-    # if time_spent >= time_budget:
-    #     vprint( verbose,  "[-] Sorry, time budget exceeded, skipping this task")
-    #     execution_success = False
-    #     continue
-    
-    # ========= Creating a model 
-    vprint( verbose,  "======== Creating model ==========")
-    M = model(len(np.unique(data['train_labels'])),data["train_images"][0].shape)
+            # ======== Keeping track of time
+            time_budget = max_time
+                
+            overall_time_budget = overall_time_budget + time_budget
+            vprint( verbose,  "[+] Cumulated time budget (all tasks so far)  %5.2f sec" % (overall_time_budget))
+            # We do not add the time left over form previous dataset: time_budget += time_left_over
+            vprint( verbose,  "[+] Time budget for this task %5.2f sec" % time_budget)
+            time_spent = time.time() - start
+            vprint( verbose,  "[+] Remaining time after reading data %5.2f sec" % (time_budget-time_spent))
+            # if time_spent >= time_budget:
+            #     vprint( verbose,  "[-] Sorry, time budget exceeded, skipping this task")
+            #     execution_success = False
+            #     continue
+            
+            # ========= Creating a model 
+            vprint( verbose,  "======== Creating model ==========")
+            M = model(len(np.unique(data['train_labels'])),data["train_images"][0].shape)
 
-    
-    # ========= Reload trained model if it exists
-    vprint( verbose,  "**********************************************************")
-    vprint( verbose,  "****** Attempting to reload model to avoid training ******")
-    vprint( verbose,  "**********************************************************")
-    you_must_train=1
-    modelname = os.path.join(submission_dir,data_name)
-    if os.path.isfile(modelname + '_model.pickle'):
-        M = M.load(modelname)
-        you_must_train=0
-        vprint( verbose,  "[+] Model reloaded, no need to train!")
-        
-    # ========= Train if needed only
-    if you_must_train:
-        vprint( verbose, "======== Trained model not found, proceeding to train!")
-        start = time.time() 
-        M.fit(X_TRAIN, Y_TRAIN) 
-        vprint( verbose,  "[+] Fitting success, time spent so far %5.2f sec" % (time.time() - start))
-        # Save model
-        # ----------
-        if save_model:
-            outname = os.path.join(submission_dir, data_name)
-            vprint( verbose, "======== Saving model to: " + output_dir)
-            M.save(outname)
-            vprint( verbose,  "[+] Success!")
-        
-    # Make predictions
-    # -----------------
-    Y_train = M.predict(X_TRAIN)
-    Y_test = M.predict(X_TEST)                         
-    vprint( verbose,  "[+] Prediction success, time spent so far %5.2f sec" % (time.time() - start))
-    
-    # Write results
-    # -------------
-    filename_train = data_name + '_train.predict'               
-    filename_test = data_name + '_test.predict'
-    vprint( verbose, "======== Saving results to: " + output_dir)
-    data_io.write(os.path.join(output_dir,filename_train), Y_train)
-    data_io.write(os.path.join(output_dir,filename_test), Y_test)
-    vprint( verbose,  "[+] Results saved, time spent so far %5.2f sec" % (time.time() - start))
-    time_spent = time.time() - start 
-    time_left_over = time_budget - time_spent
-    vprint( verbose,  "[+] End cycle, time left %5.2f sec" % time_left_over)
-    # if time_left_over<=0: break
-               
-    overall_time_spent = time.time() - overall_start
-    if execution_success:
-        vprint( verbose,  "[+] Done")
-        vprint( verbose,  "[+] Overall time spent %5.2f sec " % overall_time_spent + "::  Overall time budget %5.2f sec" % overall_time_budget)
-    else:
-        vprint( verbose,  "[-] Done, but some tasks aborted because time limit exceeded")
-        vprint( verbose,  "[-] Overall time spent %5.2f sec " % overall_time_spent + " > Overall time budget %5.2f sec" % overall_time_budget)
-    
-    del X_TEST, X_TRAIN, Y_TEST, Y_TRAIN, Y_test, Y_train, data, meta_data, M
-    gc.collect()
-              
+
+            # ========= Training the model
+            vprint( verbose, "======== Proceeding to train!")
+            start = time.time() 
+            M.fit(X_TRAIN, Y_TRAIN) 
+            vprint( verbose,  "[+] Fitting success, time spent so far %5.2f sec" % (time.time() - start))
+            
+            # ========= Reload trained model if it exists
+            # vprint( verbose,  "**********************************************************")
+            # vprint( verbose,  "****** Attempting to reload model to avoid training ******")
+            # vprint( verbose,  "**********************************************************")
+            # you_must_train=1
+            # modelname = os.path.join(submission_dir,data_name)
+            # if os.path.isfile(modelname + '_model.pickle'):
+            #     M = M.load(modelname)
+            #     you_must_train=0
+            #     vprint( verbose,  "[+] Model reloaded, no need to train!")
+                
+            # ========= Train if needed only
+            # if you_must_train:
+                # vprint( verbose, "======== Trained model not found, proceeding to train!")
+                # start = time.time() 
+                # M.fit(X_TRAIN, Y_TRAIN) 
+                # vprint( verbose,  "[+] Fitting success, time spent so far %5.2f sec" % (time.time() - start))
+                # # Save model
+                # # ----------
+                # if save_model:
+                #     outname = os.path.join(submission_dir, data_name)
+                #     vprint( verbose, "======== Saving model to: " + output_dir)
+                #     M.save(outname)
+                #     vprint( verbose,  "[+] Success!")
+                
+            # Make predictions
+            # -----------------
+            Y_train = M.predict(X_TRAIN)
+            Y_test = M.predict(X_TEST)                         
+            vprint( verbose,  "[+] Prediction success, time spent so far %5.2f sec" % (time.time() - start))
+            
+            # Write results
+            # -------------
+            filename_train = data_name + f'_train{task_n}.predict'               
+            filename_test = data_name + f'_test{task_n}.predict'
+            vprint( verbose, "======== Saving results to: " + output_dir)
+            data_io.write(os.path.join(output_dir,filename_train), Y_train)
+            data_io.write(os.path.join(output_dir,filename_test), Y_test)
+            vprint( verbose,  "[+] Results saved, time spent so far %5.2f sec" % (time.time() - start))
+            time_spent = time.time() - start 
+            time_left_over = time_budget - time_spent
+            vprint( verbose,  "[+] End cycle, time left %5.2f sec" % time_left_over)
+            # if time_left_over<=0: break
+                    
+            overall_time_spent = time.time() - overall_start
+            if execution_success:
+                vprint( verbose,  "[+] Done")
+                vprint( verbose,  "[+] Overall time spent %5.2f sec " % overall_time_spent + "::  Overall time budget %5.2f sec" % overall_time_budget)
+            else:
+                vprint( verbose,  "[-] Done, but some tasks aborted because time limit exceeded")
+                vprint( verbose,  "[-] Overall time spent %5.2f sec " % overall_time_spent + " > Overall time budget %5.2f sec" % overall_time_budget)
+            
+            del X_TEST, X_TRAIN, Y_TEST, Y_TRAIN, Y_test, Y_train, data, meta_data, M
+            gc.collect()
+            print("Done with task", task_n)
+        except:
+            pass
+    print("Done with all tasks")
 
 
 
