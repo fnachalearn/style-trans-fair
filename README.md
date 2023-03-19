@@ -2,6 +2,8 @@
 
 ---
 
+### [Starting kit on Google Colab](https://colab.research.google.com/drive/1EFnbPXCqLZ3J---5kDGQk893a2Hk-dFb?usp=sharing)
+
 # Introduction
 
 ### Overview
