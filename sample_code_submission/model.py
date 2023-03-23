@@ -12,9 +12,38 @@ from os.path import isfile
 from sklearn.base import BaseEstimator
 from sklearn.svm import LinearSVC, SVC
 from skimage.transform import resize
-import tensorflow as tf
-from tensorflow.keras import regularizers as reug
 from sklearn.preprocessing import OneHotEncoder
+
+from tqdm import tqdm
+import torch
+import torchvision
+import torchvision.transforms as transforms
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import TensorDataset, DataLoader
+from torch.optim.lr_scheduler import StepLR, CosineAnnealingLR, ReduceLROnPlateau
+
+
+
+class Net(nn.Module):
+    def __init__(self, number_of_classes, input_shape):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * ((((input_shape[0]-4)//2)-4)//2) * ((((input_shape[1]-4)//2)-4)//2), 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, number_of_classes)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = torch.flatten(x, 1) # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
 
 
 class model (BaseEstimator):
@@ -24,7 +53,7 @@ class model (BaseEstimator):
         Use triple quotes for function documentation. 
         '''
 
-        self.epochs = 3
+        self.epochs = 10
         self.batch_size = 4
         self.initial_learning_rate = 0.001
 
@@ -33,28 +62,7 @@ class model (BaseEstimator):
         self.enc = OneHotEncoder(handle_unknown='ignore')
         
 
-        self.__model = tf.keras.Sequential()
-        self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
-        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        # self.__model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
-        # self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
-        self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        # self.__model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
-        # self.__model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-        self.__model.add(tf.keras.layers.Flatten())
-        # self.__model.add(tf.keras.layers.Dense(
-        #     512, 
-        #     kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
-        #     activation='relu'))
-        self.__model.add(tf.keras.layers.Dense(
-            256, 
-            kernel_regularizer= reug.L1L2(l1=1e-5, l2=1e-4),
-            activation='relu'))
-        self.__model.add(tf.keras.layers.Dense(number_of_classes, activation='softmax'))
-        
-
-
+        self.__model = Net(number_of_classes, input_shape)
 
     def fit(self, X, y):
         '''
@@ -71,7 +79,7 @@ class model (BaseEstimator):
         For regression, labels are continuous values.
         '''
         '''
-                here the imput -X is an np.array() of shape [number of images, height, width]
+                here the imput -X is an np.array() of shape [number of images, height, width, channel]
                                -y is an np.array() of shape[number of images,]
                 what we did is to resize all the images and flatten them from 3D to 1D and
                 after this we transform the list of flatten image as array. And then we pass it into 
@@ -80,19 +88,45 @@ class model (BaseEstimator):
          '''
 
 
-        self.enc.fit(y.reshape(-1,1))
-        y = self.enc.transform(y.reshape(-1,1)).toarray()
+        X = torch.from_numpy(X.reshape(X.shape[0], X.shape[-1], X.shape[2], X.shape[1])).to(torch.float32)
+        y = torch.from_numpy(y).to(torch.long)
+
+        train_dataset = TensorDataset(X, y)
+        trainloader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(self.__model.parameters(), lr=self.initial_learning_rate)
+        scheduler = CosineAnnealingLR(optimizer, T_max=len(trainloader)*self.epochs)
+
+        running_loss = RunningLoss()
+
+        for epoch in range(self.epochs):  # loop over the dataset multiple times
+            print("epoch", epoch)
+            running_loss.reset()
+            pbar = tqdm(enumerate(trainloader), total=len(trainloader))
+            for i, data in pbar:
+                # get the inputs; data is a list of [inputs, labels]
+                inputs, labels = data
+
+                # zero the parameter gradients
+                optimizer.zero_grad()
+
+                # forward + backward + optimize
+                outputs = self.__model(inputs)
+                loss = criterion(outputs, labels)
+                loss.backward()
+                
+                optimizer.step()
+                scheduler.step()
 
 
-        total_steps = len(X) * self.epochs // self.batch_size
-        lr_decayed_fn = tf.keras.optimizers.schedules.CosineDecay(
-            self.initial_learning_rate, total_steps)
-        optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=lr_decayed_fn)
-        self.__model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+                # set the running_loss at tqdm bar 
+                running_loss.update(loss.item())
+                pbar.set_description(f"loss: {running_loss.get():.4f}")
 
-        # Run training on CPU
-        with tf.device('/cpu:0'):
-            self.__model.fit(X, y, epochs=self.epochs, batch_size=self.batch_size)
+                
+
+        print('Finished Training')
         
 
     def predict(self, X):
@@ -116,11 +150,12 @@ class model (BaseEstimator):
                 the predict function.
                 
          '''
-        
+        X = torch.from_numpy(X.reshape(X.shape[0], X.shape[-1], X.shape[1], X.shape[2])).to(torch.float32)
+        result = self.__model(X).detach().numpy()
 
-        # Run inference on CPU
-        with tf.device('/cpu:0'):
-            result = self.__model.predict(X)
+        # # Run inference on CPU
+        # with tf.device('/cpu:0'):
+        #     result = self.__model.predict(X)
 
         return np.argmax(result, axis=1)
             
@@ -136,3 +171,19 @@ class model (BaseEstimator):
                 self = pickle.load(f)
             print("Model reloaded from: " + modelfile)
         return self
+
+class RunningLoss():
+    def __init__(self):
+        self.reset()
+        self.count = 0
+
+    def reset(self):
+        self.loss = 0
+        self.count = 0
+    
+    def update(self, loss):
+        self.loss += loss
+        self.count += 1
+    
+    def get(self):
+        return self.loss / self.count
